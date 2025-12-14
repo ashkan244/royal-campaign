@@ -3,283 +3,715 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Royal Week Campaign</title>
+    <title>پروپوزال جامع یلدای رویالی | ۱۴۰۴</title>
     
-    <!-- 1. بارگذاری Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- 2. بارگذاری فونت وزیرمتن -->
+    <!-- فونت وزیرمتن -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     
-    <!-- 3. بارگذاری Babel برای اجرای React -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- آیکون‌ها -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- تیلویند سی‌اس‌اس -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'sans-serif'],
+                    },
+                    colors: {
+                        royalRed: '#9A1B28', // قرمز خاص پوسترها
+                        royalGold: '#C5A059', // طلایی مات
+                        royalGreen: '#1B4D3E', // سبز تیره پوسترها
+                        darkBg: '#0F1115',
+                        panelBg: 'rgba(20, 25, 30, 0.85)'
+                    }
+                }
+            }
+        }
+    </script>
 
-    <!-- تنظیمات استایل پایه -->
     <style>
         body {
-            font-family: 'Vazirmatn', sans-serif;
-            background-color: #09090b;
-            margin: 0;
-            overflow: hidden; /* جلوگیری از اسکرول اضافه */
+            background-color: #0F1115;
+            color: #f8fafc;
+            overflow-x: hidden;
+            background-image: url('https://uploadkon.ir/uploads/719b14_25IMG-1317.jpeg'); /* پترن پس زمینه */
+            background-size: cover;
+            background-attachment: fixed;
+            background-blend-mode: overlay;
         }
         
-        .neon-button {
-            box-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b, 0 0 40px #f59e0b;
-            animation: neon-pulse 1.5s infinite alternate;
+        .glass-panel {
+            background: rgba(15, 17, 21, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(197, 160, 89, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        @keyframes neon-pulse {
-            from { box-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b; opacity: 0.9; }
-            to { box-shadow: 0 0 15px #f59e0b, 0 0 30px #f59e0b, 0 0 50px #f59e0b; opacity: 1; }
+
+        .nav-item.active {
+            background-color: rgba(154, 27, 40, 0.2);
+            color: #C5A059;
+            border-bottom: 2px solid #C5A059;
+        }
+
+        .section-content {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+        .section-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .image-card {
+            transition: transform 0.3s ease;
+        }
+        .image-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .content-card {
+            border-left: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .content-card:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-left-color: #C5A059;
+        }
+
+        /* اسکرول بار مخفی برای منوی موبایل */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col">
 
-    <div id="root"></div>
+    <div class="fixed inset-0 bg-black/90 z-[-1]"></div>
 
-    <!-- 4. اسکریپت اصلی برنامه -->
-    <script type="text/babel" data-type="module">
-        // ایمپورت کردن کتابخانه‌ها از CDN
-        import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
-        import { createRoot } from 'https://esm.sh/react-dom@18.2.0/client';
-        import { Sparkles, Camera, Fingerprint } from 'https://esm.sh/lucide-react@0.292.0';
+    <!-- هدر -->
+    <header class="fixed w-full z-50 glass-panel border-b border-royalGold/20 top-0">
+        <div class="container mx-auto px-4 h-20 flex justify-between items-center overflow-x-auto md:overflow-visible no-scrollbar">
+            <div class="flex items-center gap-3 min-w-max mr-4">
+                <img src="https://uploadkon.ir/uploads/fd3c14_25IMG-1134.png" alt="Royal Pars Logo" class="h-10 md:h-12 w-auto brightness-0 invert">
+                <div class="hidden lg:block">
+                    <h1 class="text-lg font-bold text-royalGold">رویال پـارس</h1>
+                    <p class="text-[10px] text-gray-400 tracking-widest uppercase">Shopping Center</p>
+                </div>
+            </div>
 
-        // --- هلپر برای جلوگیری از خطا در فایل لوکال ---
-        const safeStorage = {
-            getItem: (key) => {
-                try { return localStorage.getItem(key); } catch(e) { return null; }
-            },
-            setItem: (key, value) => {
-                try { localStorage.setItem(key, value); } catch(e) {}
-            }
-        };
+            <nav class="flex gap-1 min-w-max">
+                <button onclick="switchTab('home')" id="nav-home" class="nav-item active px-3 md:px-4 py-2 rounded-t-lg text-xs md:text-sm font-medium text-gray-300 hover:text-royalGold transition flex items-center gap-2">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> <span class="hidden md:inline">استراتژی</span>
+                </button>
+                <button onclick="switchTab('results')" id="nav-results" class="nav-item px-3 md:px-4 py-2 rounded-t-lg text-xs md:text-sm font-medium text-gray-300 hover:text-royalGold transition flex items-center gap-2 bg-royalGreen/10">
+                    <i data-lucide="bar-chart-2" class="w-4 h-4"></i> <span class="hidden md:inline">اهداف و KPI</span>
+                </button>
+                <button onclick="switchTab('decor')" id="nav-decor" class="nav-item px-3 md:px-4 py-2 rounded-t-lg text-xs md:text-sm font-medium text-gray-300 hover:text-royalGold transition flex items-center gap-2">
+                    <i data-lucide="palette" class="w-4 h-4"></i> <span class="hidden md:inline">دکور</span>
+                </button>
+                <button onclick="switchTab('content')" id="nav-content" class="nav-item px-3 md:px-4 py-2 rounded-t-lg text-xs md:text-sm font-medium text-gray-300 hover:text-royalGold transition flex items-center gap-2">
+                    <i data-lucide="video" class="w-4 h-4"></i> <span class="hidden md:inline">محتوا</span>
+                </button>
+                <button onclick="switchTab('engagement')" id="nav-engagement" class="nav-item px-3 md:px-4 py-2 rounded-t-lg text-xs md:text-sm font-medium text-gray-300 hover:text-royalGold transition flex items-center gap-2">
+                    <i data-lucide="users" class="w-4 h-4"></i> <span class="hidden md:inline">تعامل</span>
+                </button>
+                <button onclick="switchTab('vip')" id="nav-vip" class="nav-item px-3 md:px-4 py-2 rounded-t-lg text-xs md:text-sm font-medium text-gray-300 hover:text-royalGold transition flex items-center gap-2">
+                    <i data-lucide="crown" class="w-4 h-4"></i> <span class="hidden md:inline">VIP</span>
+                </button>
+                <button onclick="switchTab('budget')" id="nav-budget" class="nav-item px-3 md:px-4 py-2 rounded-t-lg text-xs md:text-sm font-medium text-gray-300 hover:text-royalGold transition flex items-center gap-2 bg-royalGold/10">
+                    <i data-lucide="calculator" class="w-4 h-4"></i> <span class="hidden md:inline">هزینه‌ها</span>
+                </button>
+            </nav>
+        </div>
+    </header>
 
-        // --- تنظیمات لیست جوایز ---
-        const PRIZE_CONFIG = [
-            { 
-                id: 'cbook', 
-                brand: 'فروشگاه سی‌بوک', 
-                discount: 'یک جلد کتاب', 
-                label: 'هدیه فرهنگی', 
-                limit: 10, 
-                prefix: 'BK', 
-                color: 'from-emerald-400 to-teal-600' 
-            },
-            { 
-                id: 'sarak', 
-                brand: 'فروشگاه سارک', 
-                discount: '۲۵۰,۰۰۰', 
-                label: 'تومان تخفیف', 
-                limit: 10, 
-                prefix: 'SR', 
-                color: 'from-rose-400 to-red-600' 
-            },
-            { 
-                id: 'zarsam', 
-                brand: 'زرسام', 
-                discount: '۲۵۰,۰۰۰', 
-                label: 'تومان تخفیف', 
-                limit: 10, 
-                prefix: 'ZR', 
-                color: 'from-amber-300 to-yellow-600' 
-            },
-            { 
-                id: 'tulika', 
-                brand: 'تولیکا', 
-                discount: '۳۰۰,۰۰۰', 
-                label: 'تومان تخفیف', 
-                limit: 10, 
-                prefix: 'TL', 
-                color: 'from-purple-400 to-indigo-600' 
-            },
-            { 
-                id: 'nabhani', 
-                brand: 'نبهانی', 
-                discount: '۶۰٪', 
-                label: 'تخفیف ویژه', 
-                limit: 20, 
-                prefix: 'NB', 
-                color: 'from-blue-400 to-cyan-600' 
-            },
-            { 
-                id: 'collection', 
-                brand: 'فروشگاه کالکشن', 
-                discount: '۳۰٪', 
-                label: 'تخفیف روی کل اجناس', 
-                limit: null, 
-                prefix: 'CL', 
-                color: 'from-slate-300 to-slate-500' 
-            }
-        ];
+    <div class="h-24"></div>
 
-        function RoyalCampaignApp() {
-            const [step, setStep] = useState('intro'); // intro | loading | result
-            const [prize, setPrize] = useState(null);
+    <main class="container mx-auto px-4 py-6 flex-grow">
 
-            useEffect(() => {
-                // چک کردن جایزه قبلی
-                const existingPrize = safeStorage.getItem('royal_week_prize_v_final');
-                if (existingPrize) {
-                    setPrize(JSON.parse(existingPrize));
-                    setStep('result');
-                }
+        <!-- ==========================================
+             صفحه ۱: خانه و استراتژی جامع (HOME)
+        ========================================== -->
+        <section id="home" class="section-content active">
+            <!-- بنر اصلی -->
+            <div class="relative rounded-2xl overflow-hidden mb-12 border border-royalGold/30 shadow-2xl h-[500px]">
+                <img src="https://uploadkon.ir/uploads/89ad14_25IMG-1314.jpeg" class="absolute inset-0 w-full h-full object-cover" alt="Hero Banner">
+                <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent flex items-center">
+                    <div class="px-8 md:px-16 max-w-2xl">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 bg-royalRed/90 text-white text-sm rounded-full mb-6 backdrop-blur-sm shadow-[0_0_15px_rgba(154,27,40,0.5)]">
+                            <i data-lucide="calendar" class="w-4 h-4"></i>
+                            <span class="font-bold">پنج‌شنبه ۲۸ آذر  تا  دوشنبه ۱ دی ماه</span>
+                        </div>
+                        <h1 class="text-5xl md:text-7xl font-black text-white mb-4 leading-tight">یلـدایِ <span class="text-royalGold">رویالـی</span></h1>
+                        <p class="text-2xl text-gray-200 font-light mb-8">طولانی‌ترین شب سال، <span class="text-royalRed font-bold border-b-2 border-royalRed">طولانی‌ترین خریدت</span> میشه...</p>
+                        <div class="flex gap-4">
+                            <button onclick="switchTab('results')" class="px-6 py-3 bg-royalGold text-black font-bold rounded-lg hover:bg-yellow-500 transition shadow-lg shadow-royalGold/20">مشاهده KPI و اهداف</button>
+                            <button onclick="switchTab('vip')" class="px-6 py-3 border border-white text-white font-bold rounded-lg hover:bg-white/10 transition">طرح مهمانی VIP</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- مارکتینگ پلن و استراتژی کلان -->
+            <div class="glass-panel p-8 rounded-2xl mb-12">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-white">استراتژی جامع مارکتینگ (IMC)</h2>
+                    <p class="text-gray-400 mt-2">نقشه راه ۵ روزه برای تسخیر ذهن و قلب مخاطب</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                    <!-- خط اتصال (در دسکتاپ) -->
+                    <div class="hidden md:block absolute top-12 left-0 w-full h-1 bg-gradient-to-r from-royalRed via-royalGold to-royalGreen opacity-30 z-0"></div>
+
+                    <!-- گام ۱: جذب -->
+                    <div class="relative z-10 bg-[#0F1115] p-6 rounded-xl border border-white/10 hover:border-royalRed transition">
+                        <div class="w-14 h-14 bg-royalRed/20 rounded-full flex items-center justify-center mx-auto mb-4 text-royalRed shadow-[0_0_20px_rgba(154,27,40,0.3)]">
+                            <i data-lucide="megaphone" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white text-center mb-2">فاز ۱: آگاهی و جذب</h3>
+                        <p class="text-gray-400 text-sm text-center mb-4">تبدیل نمای پاساژ به بیلبورد شهری</p>
+                        <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                            <li>نصب تونل نوری و استیکرهای هندسی ورودی</li>
+                            <li>اهتزاز پرچم‌های یکپارچه با هویت بصری کمپین</li>
+                            <li>تبلیغات محیطی و تیزینگ در سوشال مدیا</li>
+                        </ul>
+                    </div>
+
+                    <!-- گام ۲: تجربه -->
+                    <div class="relative z-10 bg-[#0F1115] p-6 rounded-xl border border-white/10 hover:border-royalGold transition">
+                        <div class="w-14 h-14 bg-royalGold/20 rounded-full flex items-center justify-center mx-auto mb-4 text-royalGold shadow-[0_0_20px_rgba(197,160,89,0.3)]">
+                            <i data-lucide="music" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white text-center mb-2">فاز ۲: درگیری و تجربه</h3>
+                        <p class="text-gray-400 text-sm text-center mb-4">افزایش زمان حضور (Dwell Time)</p>
+                        <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                            <li>اجرای زنده پیانو در ۴ شب متوالی</li>
+                            <li>نقاط عکاسی (Photo Spots) در وید و طبقات</li>
+                            <li>مهمانی VIP برای ایجاد حس تمایز و لوکس بودن</li>
+                        </ul>
+                    </div>
+
+                    <!-- گام ۳: تبدیل -->
+                    <div class="relative z-10 bg-[#0F1115] p-6 rounded-xl border border-white/10 hover:border-royalGreen transition">
+                        <div class="w-14 h-14 bg-royalGreen/20 rounded-full flex items-center justify-center mx-auto mb-4 text-royalGreen shadow-[0_0_20px_rgba(27,77,62,0.3)]">
+                            <i data-lucide="shopping-bag" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-white text-center mb-2">فاز ۳: تبدیل و وفاداری</h3>
+                        <p class="text-gray-400 text-sm text-center mb-4">تبدیل بازدیدکننده به خریدار و عضو</p>
+                        <ul class="text-sm text-gray-300 space-y-2 list-disc list-inside">
+                            <li>شعار «طولانی‌ترین خرید» برای تحریک فروش</li>
+                            <li>جمع‌آوری دیتابیس (CRM) با فال‌های هدیه</li>
+                            <li>مسئولیت اجتماعی (درخت مهربانی) برای برندینگ</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 p-4 bg-white/5 rounded-lg border-l-4 border-royalGold flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <span class="font-bold text-royalGold block mb-1">مخاطبان هدف (Target Audience):</span>
+                        <p class="text-sm text-gray-300">۱. خانواده‌های اهوازی (تفریح و خرید) | ۲. نسل Z (عکاسی و سوشال) | ۳. طبقه مرفه (رویداد VIP)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             صفحه جدید: اهداف و KPI (RESULTS) - اصلاح شده و ایمن
+        ========================================== -->
+        <section id="results" class="section-content">
+            <div class="text-center mb-10">
+                <span class="text-royalGreen text-sm font-bold uppercase tracking-wider">Project Targets</span>
+                <h2 class="text-3xl font-bold text-white mt-2">اهداف و شاخص‌های کلیدی (KPIs)</h2>
+                <p class="text-gray-400 mt-2">تخمین واقع‌بینانه عملکرد و دستاوردهای کیفی مورد انتظار</p>
+            </div>
+
+            <!-- بخش اهداف کمی (Quantitative) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 
-                // مقداردهی اولیه شمارشگر
-                if (!safeStorage.getItem('prize_counts')) {
-                    safeStorage.setItem('prize_counts', JSON.stringify({}));
-                }
-            }, []);
+                <!-- اهداف سوشال مدیا -->
+                <div class="glass-panel p-8 rounded-2xl border-t-4 border-royalRed">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-3 bg-royalRed/20 rounded-lg text-royalRed"><i data-lucide="instagram" class="w-6 h-6"></i></div>
+                        <h3 class="text-2xl font-bold text-white">اهداف کمی: سوشال مدیا</h3>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1 text-gray-300">
+                                <span>بازدید کل (Impressions)</span>
+                                <span class="text-royalGold font-bold">+200K</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-royalRed to-orange-500 h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-1">تخمین بر اساس وایرال شدن محتوای دکور و مهمانی VIP</p>
+                        </div>
 
-            const handleStartLottery = () => {
-                setStep('loading');
+                        <div>
+                            <div class="flex justify-between text-sm mb-1 text-gray-300">
+                                <span>محتوای تولید کاربر (UGC)</span>
+                                <span class="text-royalGold font-bold">~300-500 Story</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-royalRed to-orange-500 h-2 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
 
-                // 1. خواندن موجودی
-                const counts = JSON.parse(safeStorage.getItem('prize_counts') || '{}');
+                        <div>
+                            <div class="flex justify-between text-sm mb-1 text-gray-300">
+                                <span>نرخ تعامل (Engagement Rate)</span>
+                                <span class="text-royalGold font-bold">+5% Avg</span>
+                            </div>
+                            <div class="w-full bg-gray-700 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-royalRed to-orange-500 h-2 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                // 2. فیلتر کردن مجازها
-                const availablePrizes = PRIZE_CONFIG.filter(p => {
-                    if (p.limit === null) return true;
-                    const used = counts[p.id] || 0;
-                    return used < p.limit;
-                });
+                <!-- اهداف حضوری و بیزینسی -->
+                <div class="glass-panel p-8 rounded-2xl border-t-4 border-royalGreen">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-3 bg-royalGreen/20 rounded-lg text-royalGreen"><i data-lucide="footprints" class="w-6 h-6"></i></div>
+                        <h3 class="text-2xl font-bold text-white">اهداف کمی: فروش و محیط</h3>
+                    </div>
 
-                // 3. انتخاب رندوم
-                const selectedPool = availablePrizes.length > 0 ? availablePrizes : [PRIZE_CONFIG[PRIZE_CONFIG.length - 1]];
-                const randomIndex = Math.floor(Math.random() * selectedPool.length);
-                const selectedPrize = selectedPool[randomIndex];
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition">
+                            <div class="text-3xl font-black text-white mb-1">+25%</div>
+                            <div class="text-xs text-gray-400">افزایش پاخور (Footfall)</div>
+                            <div class="text-[10px] text-gray-600 mt-1">تارگت: پیک ساعت ۲۰ تا ۲۳</div>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition">
+                            <div class="text-3xl font-black text-white mb-1">+15 <span class="text-sm font-normal">Min</span></div>
+                            <div class="text-xs text-gray-400">ماندگاری (Dwell Time)</div>
+                            <div class="text-[10px] text-gray-600 mt-1">توقف در لابی و وید</div>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition">
+                            <div class="text-3xl font-black text-white mb-1">+1000</div>
+                            <div class="text-xs text-gray-400">لید جدید (CRM)</div>
+                            <div class="text-[10px] text-gray-600 mt-1">از طریق کمپین فال</div>
+                        </div>
+                        <div class="bg-white/5 p-4 rounded-xl text-center hover:bg-white/10 transition">
+                            <div class="text-3xl font-black text-white mb-1">90%</div>
+                            <div class="text-xs text-gray-400">رضایت برندهای VIP</div>
+                            <div class="text-[10px] text-gray-600 mt-1">نظرسنجی پس از رویداد</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- بخش اهداف کیفی (Qualitative) - ارزش افزوده -->
+            <div class="glass-panel p-6 rounded-2xl border border-royalGold/30">
+                <div class="text-center mb-6">
+                    <h3 class="text-xl font-bold text-royalGold">اهداف کیفی و ارزش افزوده (Qualitative Value)</h3>
+                    <p class="text-sm text-gray-400">دستاوردهای ماندگار که فراتر از اعداد هستند</p>
+                </div>
                 
-                // 4. آپدیت موجودی
-                counts[selectedPrize.id] = (counts[selectedPrize.id] || 0) + 1;
-                safeStorage.setItem('prize_counts', JSON.stringify(counts));
-
-                // 5. تولید کد
-                const randomCode = `${selectedPrize.prefix}-${Math.floor(1000 + Math.random() * 9000)}`;
-
-                const newPrizeData = {
-                    ...selectedPrize,
-                    code: randomCode,
-                    date: new Date().toLocaleDateString('fa-IR')
-                };
-
-                setTimeout(() => {
-                    safeStorage.setItem('royal_week_prize_v_final', JSON.stringify(newPrizeData));
-                    setPrize(newPrizeData);
-                    setStep('result');
-                }, 2500); 
-            };
-
-            // --- کامپوننت‌ها ---
-            const RenderIntro = () => (
-                <div className="flex flex-col items-center justify-center text-center w-full max-w-[360px] animate-[fadeIn_0.7s_ease-out]">
-                    <h1 className="text-4xl font-black text-white mb-12 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] leading-tight">
-                        چه تخفیفی<br/>بهت بدم..؟
-                    </h1>
-                    <button 
-                        onClick={handleStartLottery}
-                        className="neon-button relative group bg-transparent border-[3px] border-amber-500 text-amber-500 text-3xl font-black py-6 px-12 rounded-full transition-transform duration-300 active:scale-95 hover:scale-105 cursor-pointer"
-                    >
-                        <span className="relative z-10 flex items-center gap-3">
-                            <Fingerprint className="animate-pulse" size={32} />
-                            بزن اینجا
-                        </span>
-                        <div className="absolute inset-0 rounded-full bg-amber-500 opacity-20 blur-xl group-hover:opacity-40 transition-opacity"></div>
-                    </button>
-                    <p className="text-zinc-500 text-xs mt-12 animate-pulse">ROYAL WEEK • TAP TO START</p>
-                </div>
-            );
-
-            const RenderLoading = () => (
-                <div className="flex flex-col items-center">
-                    <div className="relative">
-                        <div className="w-24 h-24 border-[6px] border-zinc-700 border-t-amber-500 rounded-full animate-spin"></div>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <Sparkles className="text-amber-500 animate-pulse" size={24} />
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- ارزش ۱ -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white mb-3">
+                            <i data-lucide="image-plus" class="w-5 h-5"></i>
                         </div>
+                        <h4 class="font-bold text-white text-sm mb-2">تولید بانک محتوای حرفه‌ای</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            ایجاد آرشیوی از تصاویر و ویدیوهای باکیفیت از فضای پاساژ و رویداد که تا ماه‌ها خوراک تبلیغاتی پیج اینستاگرام و سایت مجموعه را تأمین می‌کند (Content Asset).
+                        </p>
                     </div>
-                    <h2 className="text-xl font-black text-zinc-300 mt-6 animate-pulse">در حال قرعه‌کشی...</h2>
-                </div>
-            );
 
-            const RenderResult = () => {
-                if (!prize) return null;
-                const isLongText = prize.discount.length > 5;
-                const textSizeClass = isLongText ? "text-[4rem]" : "text-[7rem]";
-
-                return (
-                    <div className="w-full max-w-[400px] animate-[slideUp_0.7s_ease-out]">
-                        <div className="text-center mb-6">
-                            <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-2 mb-3 shadow-lg">
-                                <Sparkles size={20} className="text-amber-400 fill-amber-400/50" />
-                                <span className="text-lg text-zinc-100 font-black tracking-wide drop-shadow-sm">برنده خوش‌شانس امروز</span>
-                            </div>
-                            <h1 className="text-5xl font-black text-white drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)] tracking-tighter">تبریک!</h1>
+                    <!-- ارزش ۲ -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white mb-3">
+                            <i data-lucide="heart-handshake" class="w-5 h-5"></i>
                         </div>
-
-                        <div className="bg-gradient-to-b from-zinc-800 to-zinc-900 rounded-[2.5rem] border border-white/10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.7)] relative overflow-hidden ring-1 ring-white/5">
-                            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
-                            <div className="absolute -left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-zinc-950 border-r border-white/10 rounded-full z-20"></div>
-                            <div className="absolute -right-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-zinc-950 border-l border-white/10 rounded-full z-20"></div>
-
-                            <div className="p-6 pb-0 flex flex-col items-center text-center relative z-10">
-                                <div className="mb-5 w-full">
-                                    <span className="block text-zinc-400 text-base font-black mb-2 uppercase tracking-wide">قابل استفاده در:</span>
-                                    <h2 className="text-[2.2rem] leading-none font-black text-white drop-shadow-md break-words">
-                                        {prize.brand}
-                                    </h2>
-                                </div>
-
-                                <div className="w-full border-t-[3px] border-dashed border-zinc-700/50 my-2"></div>
-
-                                <div className="py-3 relative w-full">
-                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-amber-500/20 blur-3xl rounded-full"></div>
-                                    <span className={`relative ${textSizeClass} leading-none font-black bg-gradient-to-b ${prize.color} bg-clip-text text-transparent drop-shadow-xl tracking-tighter filter brightness-110 block py-2`}>
-                                        {prize.discount}
-                                    </span>
-                                    <span className="block text-zinc-300 text-2xl font-black mt-[-0.5rem] drop-shadow-md">{prize.label}</span>
-                                </div>
-
-                                <div className="mt-5 mb-6 bg-black/30 backdrop-blur-sm w-full py-5 rounded-2xl border border-white/5 inner-shadow">
-                                    <p className="text-zinc-500 text-sm font-black mb-1">کد اختصاصی شما</p>
-                                    <p className="text-4xl font-mono font-black text-amber-500 tracking-[0.15em] drop-shadow-sm">{prize.code}</p>
-                                </div>
-                            </div>
-
-                            <div className="bg-amber-500 p-5 flex items-center justify-center gap-4 border-t border-amber-400/50 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/20 to-transparent pointer-events-none"></div>
-                                <div className="bg-black/20 p-3 rounded-2xl animate-pulse backdrop-blur-sm">
-                                    <Camera className="text-black/80" size={32} strokeWidth={2.5} />
-                                </div>
-                                <div className="text-right z-10">
-                                    <p className="text-black font-black text-3xl leading-none mb-1 drop-shadow-sm">اسکرین‌شات بگیرید</p>
-                                    <p className="text-black/70 text-base font-bold leading-none mt-1">و به فروشنده نشان دهید</p>
-                                </div>
-                            </div>
-                        </div>
-                        <p className="text-center text-xs text-zinc-500 mt-8 font-bold opacity-70 tracking-widest">ROYAL WEEK CAMPAIGN</p>
+                        <h4 class="font-bold text-white text-sm mb-2">ارتقای تصویر برند (Brand Image)</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            تثبیت جایگاه «رویال پارس» به عنوان یک «مقصد لایف‌استایل» (Lifestyle Destination) و نه صرفاً یک مرکز خرید، از طریق برگزاری رویدادهای فرهنگی و موسیقی.
+                        </p>
                     </div>
-                );
-            };
 
-            return (
-                <div className="min-h-screen bg-zinc-950 text-white flex flex-col items-center justify-center p-4 relative overflow-hidden" dir="rtl">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-zinc-800 via-zinc-950 to-black pointer-events-none"></div>
-                    <div className="relative z-10 w-full flex justify-center">
-                        {step === 'intro' && <RenderIntro />}
-                        {step === 'loading' && <RenderLoading />}
-                        {step === 'result' && <RenderResult />}
+                    <!-- ارزش ۳ -->
+                    <div class="flex flex-col items-center text-center">
+                        <div class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center text-white mb-3">
+                            <i data-lucide="smile" class="w-5 h-5"></i>
+                        </div>
+                        <h4 class="font-bold text-white text-sm mb-2">بهبود تجربه مشتری (CX)</h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            ایجاد خاطره مثبت در ذهن مشتریان که باعث افزایش نرخ بازگشت (Retention Rate) و توصیه‌های کلامی (Word of Mouth) در شهر می‌شود.
+                        </p>
                     </div>
                 </div>
-            );
+            </div>
+        </section>
+
+        <!-- ==========================================
+             صفحه ۲: اتمسفر و دکور (DECOR)
+        ========================================== -->
+        <section id="decor" class="section-content">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-royalGold">اتمسفر و طراحی محیطی</h2>
+                <p class="text-gray-400 mt-2">خلق تجربه‌ای بصری و شنیداری از ورودی تا وید مرکزی</p>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://uploadkon.ir/uploads/eea814_25IMG-1345.jpeg" class="rounded-lg shadow-lg w-full h-48 object-cover image-card" alt="Exterior Decor 1">
+                        <img src="https://uploadkon.ir/uploads/7c9b14_25IMG-1328.jpeg" class="rounded-lg shadow-lg w-full h-48 object-cover image-card" alt="Exterior Decor 2">
+                    </div>
+                    <div>
+                        <span class="text-royalRed font-bold text-sm tracking-widest">EXTERIOR DESIGN</span>
+                        <h3 class="text-2xl font-bold text-white mt-2 mb-4">ورودی و استیکرهای محیطی</h3>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            استفاده از استیکرهای هندسی با تم ویترای (شیشه‌رنگی) روی شیشه‌های ورودی و ایجاد تونل‌های نوری دعوت‌کننده. 
+                        </p>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-royalGold w-4 h-4"></i> همسان‌سازی پرچم‌های بیرونی با هویت بصری کمپین</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="text-royalGold w-4 h-4"></i> ایجاد حس دعوت‌کنندگی از فاصله دور</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="order-2 md:order-1">
+                        <span class="text-royalGold font-bold text-sm tracking-widest">CENTRAL STAGE</span>
+                        <h3 class="text-2xl font-bold text-white mt-2 mb-4">استیج مدرن پیانو</h3>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            استقرار پیانو گرند در لابی اصلی با پس‌زمینه نوری (Light-box) مدرن. اجرای زنده قطعات نوستالژیک ایرانی در ۴ روز جشنواره.
+                        </p>
+                        <div class="bg-white/5 p-4 rounded-lg border-l-4 border-royalGold">
+                            <p class="text-xs text-gray-300">
+                                <strong class="text-white">هدف مارکتینگ:</strong> تحقیقات نشان می‌دهد موسیقی کلاسیک سرعت حرکت مشتری را کم کرده و تمایل به خرید کالاهای لوکس را افزایش می‌دهد.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <img src="https://uploadkon.ir/uploads/b40714_25IMG-0950.jpeg" class="rounded-lg shadow-lg w-full h-64 object-cover image-card" alt="Piano Stage">
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <img src="https://uploadkon.ir/uploads/cd6214_2519eb5b47-f731-420e-8d02-2d2f9a4b781c.jpeg" class="rounded-lg shadow-lg w-full h-64 object-cover image-card" alt="Iran Map Decor">
+                    </div>
+                    <div>
+                        <span class="text-royalGreen font-bold text-sm tracking-widest">PHOTO POINT</span>
+                        <h3 class="text-2xl font-bold text-white mt-2 mb-4">دکور سنتی «ایرانِ من»</h3>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            اجرای یک دکور فاخر با المان نقشه ایران در مرکز و چیدمان المان‌های یلدایی اطراف آن. این نقطه به عنوان <strong>لوکیشن اصلی تولید محتوا (Content Spot)</strong> برای مشتریان عمل می‌کند.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             صفحه ۳: نقشه راه محتوایی (CONTENT)
+        ========================================== -->
+        <section id="content" class="section-content">
+            <div class="text-center mb-10">
+                <span class="text-royalRed text-sm font-bold uppercase tracking-wider">Social Media Roadmap</span>
+                <h2 class="text-3xl font-bold text-white mt-2">برنامه تولید محتوا (Content Plan)</h2>
+                <p class="text-gray-400 mt-2">استراتژی پوشش رسانه‌ای برای درگیر کردن مخاطبان اینستاگرام</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <div class="glass-panel p-6 rounded-xl content-card flex gap-4">
+                    <div class="w-12 h-12 bg-royalGold/20 rounded-lg flex items-center justify-center flex-shrink-0 text-royalGold">
+                        <i data-lucide="mic" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">۱. مصاحبه مردمی (Vox Pop)</h3>
+                        <p class="text-gray-400 text-sm mb-3">گفتگو با مشتریان حاضر در پاساژ درباره حس و حال یلدا و خاطراتشان.</p>
+                        <div class="text-xs text-gray-500 bg-black/30 p-2 rounded border-r-2 border-royalGold">
+                            <span class="text-royalGold font-bold">هدف مارکتینگ:</span> ایجاد حس صمیمیت (Social Proof) و نشان دادن شلوغی و پویایی مرکز خرید به مخاطبان آنلاین.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl content-card flex gap-4">
+                    <div class="w-12 h-12 bg-royalGreen/20 rounded-lg flex items-center justify-center flex-shrink-0 text-royalGreen">
+                        <i data-lucide="leaf" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">۲. روایت درخت (Storytelling)</h3>
+                        <p class="text-gray-400 text-sm mb-3">روایتی احساسی و داستانی (Voiceover) از شکوفا شدن درخت خشک با دست‌های مردم.</p>
+                        <div class="text-xs text-gray-500 bg-black/30 p-2 rounded border-r-2 border-royalGreen">
+                            <span class="text-royalGreen font-bold">هدف مارکتینگ:</span> برندینگ عاطفی (CSR) و تشویق مخاطبان به مشارکت حضوری برای کار خیر.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl content-card flex gap-4">
+                    <div class="w-12 h-12 bg-royalRed/20 rounded-lg flex items-center justify-center flex-shrink-0 text-royalRed">
+                        <i data-lucide="music-2" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">۳. ویدیو موزیکال (Real Vibe)</h3>
+                        <p class="text-gray-400 text-sm mb-3">تصویربرداری حرفه‌ای و رئال از اجرای پیانو و اتمسفر لوکس لابی با تدوین ریتمیک.</p>
+                        <div class="text-xs text-gray-500 bg-black/30 p-2 rounded border-r-2 border-royalRed">
+                            <span class="text-royalRed font-bold">هدف مارکتینگ:</span> انتقال حس «لاکچری و آرامش» (Sensory Marketing) و جذب مخاطبانی که به دنبال محیطی خاص هستند.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl content-card flex gap-4">
+                    <div class="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0 text-blue-400">
+                        <i data-lucide="image" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">۴. محتوای فرهنگی/هنری</h3>
+                        <p class="text-gray-400 text-sm mb-3">پست‌های گرافیکی یا ویدیویی با تمرکز بر المان‌های سنتی و فرهنگی یلدا (مثل سفره آرایی هنری).</p>
+                        <div class="text-xs text-gray-500 bg-black/30 p-2 rounded border-r-2 border-blue-400">
+                            <span class="text-blue-400 font-bold">هدف مارکتینگ:</span> تثبیت جایگاه رویال پارس به عنوان یک «قطب فرهنگی» و ارتقای کلاس برند.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl content-card flex gap-4 md:col-span-2">
+                    <div class="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0 text-purple-400">
+                        <i data-lucide="star" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-white mb-2">۵. پوشش اختصاصی طبقه ۶ (VIP)</h3>
+                        <p class="text-gray-400 text-sm mb-3">گزارش‌های کوتاه و جذاب (Reels) از پشت صحنه و جریان مهمانی VIP بام رویال.</p>
+                        <div class="text-xs text-gray-500 bg-black/30 p-2 rounded border-r-2 border-purple-400">
+                            <span class="text-purple-400 font-bold">هدف مارکتینگ:</span> ایجاد حس انحصار (Exclusivity) و FOMO (ترس از دست دادن) برای مخاطبان و بالا بردن ارزش برند (Brand Value).
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==========================================
+             صفحه ۴: تعامل و CSR (ENGAGEMENT)
+        ========================================== -->
+        <section id="engagement" class="section-content">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-royalGreen">تعامل و مسئولیت اجتماعی</h2>
+                <p class="text-gray-400 mt-2">ترکیب گیمیفیکیشن با نیکوکاری</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- کارت درخت مهربانی -->
+                <div class="glass-panel p-0 rounded-2xl overflow-hidden flex flex-col">
+                    <div class="relative h-64">
+                        <img src="https://uploadkon.ir/uploads/bb5b14_25IMG-0956.jpeg" class="w-full h-full object-cover" alt="Charity Tree">
+                        <div class="absolute top-4 right-4 bg-royalGreen text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">CSR Project</div>
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-2xl font-bold text-white mb-3">درخت رویالی (مسئولیت اجتماعی)</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">
+                            در سمت چپ ورودی، درختی خشک نصب می‌شود. گروه خیریه مستقر، در ازای کمک‌های مردمی، انارهای نمادین به مشتریان می‌دهند تا به درخت بیاویزند.
+                        </p>
+                        <ul class="space-y-2 mt-4">
+                            <li class="flex items-center gap-2 text-sm text-gray-300"><i data-lucide="heart" class="text-royalRed w-4 h-4"></i> تبدیل درخت خشک به درخت سبز و قرمز</li>
+                            <li class="flex items-center gap-2 text-sm text-gray-300"><i data-lucide="heart" class="text-royalRed w-4 h-4"></i> برندینگ عاطفی و مشارکت مردمی</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- کارت گیمیفیکیشن و فال -->
+                <div class="glass-panel p-0 rounded-2xl overflow-hidden flex flex-col">
+                    <div class="relative h-64">
+                        <img src="https://uploadkon.ir/uploads/2c0b14_25IMG-1309.jpeg" class="w-full h-full object-cover" alt="Fal Cards">
+                        <div class="absolute top-4 right-4 bg-royalRed text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">CRM Campaign</div>
+                    </div>
+                    <div class="p-6 flex-grow">
+                        <h3 class="text-2xl font-bold text-white mb-3">هزار فالِ رویالی & بازی اساطیر</h3>
+                        <p class="text-gray-400 text-sm mb-4 leading-relaxed">
+                            اجرای دو کمپین موازی برای جمع‌آوری دیتای مشتریان:
+                        </p>
+                        <div class="space-y-4">
+                            <div class="bg-white/5 p-3 rounded border-r-2 border-royalGold">
+                                <h4 class="text-white font-bold text-sm">۱. فال‌های هدیه (CRM):</h4>
+                                <p class="text-xs text-gray-400 mt-1">توزیع بروشورهای فال اساطیری (رستم، سیمرغ...) حاوی کد تخفیف در ازای ثبت شماره موبایل.</p>
+                            </div>
+                            <div class="bg-white/5 p-3 rounded border-r-2 border-royalGold">
+                                <h4 class="text-white font-bold text-sm">۲. سرگرمی محیطی:</h4>
+                                <p class="text-xs text-gray-400 mt-1">اجرای «فال کوزه» (آیین سنتی) و بازی عمومی «اساطیر ایران» برای درگیر کردن خانواده‌ها.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==========================================
+             صفحه ۵: مهمانی VIP (VIP EVENT)
+        ========================================== -->
+        <section id="vip" class="section-content">
+            <div class="glass-panel p-8 md:p-12 rounded-3xl relative overflow-hidden">
+                <!-- پس زمینه تزئینی -->
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-royalGold via-royalRed to-royalGold"></div>
+                <div class="absolute -right-20 -top-20 w-64 h-64 bg-royalGold/10 rounded-full blur-3xl"></div>
+
+                <div class="flex flex-col md:flex-row gap-10">
+                    <div class="md:w-2/3">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="bg-royalGold text-black p-2 rounded-lg">
+                                <i data-lucide="crown" class="w-6 h-6"></i>
+                            </div>
+                            <h2 class="text-3xl font-bold text-white">مهمانی بزرگ شب چله رویالی</h2>
+                            <span class="px-3 py-1 bg-white/10 text-xs rounded text-gray-300">Invite Only</span>
+                        </div>
+
+                        <h3 class="text-xl text-royalGold mb-4">استراتژی: چرا این مهمانی ضروری است؟</h3>
+                        <p class="text-gray-300 leading-relaxed mb-6">
+                            برگزاری یک ضیافت مجلل در طبقه ۶، فراتر از یک جشن ساده است. این رویداد یک ابزار قدرتمند <strong>B2B Marketing</strong> و <strong>PR</strong> برای مجموعه است. حضور افراد کلیدی در این رویداد، جایگاه رویال پارس را به عنوان «قلب تپنده تجاری و فرهنگی اهواز» تثبیت می‌کند.
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                            <div class="bg-black/40 p-4 rounded-lg border border-white/5">
+                                <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-royalRed"></i> لیست مدعوین</h4>
+                                <ul class="text-xs text-gray-400 space-y-1 list-disc list-inside">
+                                    <li>اینفلوئنسرهای تاپ اهواز (جهت پروموت)</li>
+                                    <li>مدیران برندهای مستقر در پاساژ (B2B)</li>
+                                    <li>چهره‌های سرشناس بیزینسی و هنری</li>
+                                </ul>
+                            </div>
+                            <div class="bg-black/40 p-4 rounded-lg border border-white/5">
+                                <h4 class="text-white font-bold mb-2 flex items-center gap-2"><i data-lucide="star" class="w-4 h-4 text-royalRed"></i> محتوای برنامه</h4>
+                                <ul class="text-xs text-gray-400 space-y-1 list-disc list-inside">
+                                    <li>موسیقی زنده اختصاصی</li>
+                                    <li>پرفورمنس و نمایش هنری</li>
+                                    <li>پذیرایی فاخر یلدایی (شام و آجیل)</li>
+                                    <li>نتورکینگ در فضایی لوکس</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/3 flex flex-col justify-center items-center bg-gradient-to-br from-royalRed/20 to-black rounded-2xl p-6 border border-royalRed/30 text-center">
+                        <img src="https://uploadkon.ir/uploads/719b14_25IMG-1317.jpeg" class="w-24 h-24 rounded-full border-2 border-royalGold mb-4 object-cover" alt="VIP Icon">
+                        <h4 class="text-xl font-bold text-white mb-2">طبقه ۶ | بام رویال</h4>
+                        <p class="text-sm text-gray-400 mb-6">جمعه ۳۰ آذر ماه - ساعت ۲۰:۰۰</p>
+                        <button class="w-full py-3 bg-royalGold text-black font-bold rounded hover:bg-yellow-500 transition">دانلود سین برنامه (PDF)</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             صفحه ۶: بودجه بندی (BUDGET)
+        ========================================== -->
+        <section id="budget" class="section-content">
+            <div class="text-center mb-10">
+                <span class="text-green-500 text-sm font-bold uppercase tracking-wider">Financial Overview</span>
+                <h2 class="text-3xl font-bold text-white mt-2">تخمین بودجه پروژه</h2>
+                <p class="text-gray-400 mt-2">برآورد هزینه‌های اجرایی، دکوراتیو و عملیاتی (Estimates)</p>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl border-b-4 border-royalGold mb-10 text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-royalGold/5"></div>
+                <h3 class="text-lg text-gray-300 relative z-10">مجموع برآورد بودجه کمپین</h3>
+                <div class="text-4xl md:text-5xl font-black text-white mt-2 mb-2 relative z-10">۲۱۵,۰۰۰,۰۰۰ <span class="text-lg font-normal text-gray-400">تومان</span></div>
+                <p class="text-xs text-gray-500 relative z-10">*این مبلغ تقریبی است و بر اساس هزینه‌های روز محاسبه شده است.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="glass-panel p-6 rounded-xl flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-blue-500/20 text-blue-400 rounded-lg">
+                            <i data-lucide="palette" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">۱۵۰ <span class="text-xs text-gray-400">میلیون</span></span>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-3">دکوراسیون، چاپ و فضاسازی VIP</h4>
+                    <ul class="text-sm text-gray-400 space-y-2 mb-4 flex-grow">
+                        <li class="flex items-start gap-2">• طراحی و اجرای استیج پیانو و بک‌گراند نوری</li>
+                        <li class="flex items-start gap-2">• اجرای دکور درخت مهربانی و دکور نقشه ایران</li>
+                        <li class="flex items-start gap-2">• چاپ استیکرها، پرچم‌ها، کارت‌های فال و اقلام تبلیغاتی</li>
+                        <li class="flex items-start gap-2">• فضاسازی دکوراتیو و شکیل‌سازی سالن مهمانی VIP</li>
+                        <li class="flex items-start gap-2">• تزیینات نوری و محیطی وید و ورودی</li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-purple-500/20 text-purple-400 rounded-lg">
+                            <i data-lucide="music" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">۵۰ <span class="text-xs text-gray-400">میلیون</span></span>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-3">اجرای مهمانی و پذیرایی</h4>
+                    <ul class="text-sm text-gray-400 space-y-2 mb-4 flex-grow">
+                        <li class="flex items-start gap-2">• گروه موسیقی اختصاصی و سیستم صوت برای VIP</li>
+                        <li class="flex items-start gap-2">• تیم اجرایی، تشریفات و مهمانداران مراسم</li>
+                        <li class="flex items-start gap-2">• پذیرایی شام، فینگرفود و پک‌های یلدایی مهمانان</li>
+                        <li class="flex items-start gap-2">• مجری و پرفورمنس‌های هنری داخل جشن</li>
+                    </ul>
+                </div>
+
+                <div class="glass-panel p-6 rounded-xl flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-3 bg-orange-500/20 text-orange-400 rounded-lg">
+                            <i data-lucide="users" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-xl font-bold text-white">۱۵ <span class="text-xs text-gray-400">میلیون</span></span>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-3">هزینه‌های جانبی و هنری</h4>
+                    <ul class="text-sm text-gray-400 space-y-2 mb-4 flex-grow">
+                        <li class="flex items-start gap-2">• دستمزد نوازنده پیانو (۴ شب اجرا)</li>
+                        <li class="flex items-start gap-2">• هزینه‌های حمل و نقل و لجستیک دکورها</li>
+                        <li class="flex items-start gap-2">• پذیرایی عوامل اجرایی در طول ۴ روز</li>
+                        <li class="flex items-start gap-2">• هزینه‌های پیش‌بینی نشده (Contingency)</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-auto glass-panel border-t border-royalGold/10 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex justify-center items-center gap-2 mb-4 opacity-70">
+                <img src="https://uploadkon.ir/uploads/fd3c14_25IMG-1134.png" class="h-8 brightness-0 invert" alt="Logo">
+            </div>
+            <p class="text-gray-500 text-xs">طراحی استراتژی و اجرا: تیم مارکتینگ و توسعه بازار رویال پارس | زمستان ۱۴۰۴</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById('nav-' + tabId).classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        const root = createRoot(document.getElementById('root'));
-        root.render(<RoyalCampaignApp />);
     </script>
-    
-    <!-- استایل‌های انیمیشن که در CSS اینلاین سخت بود -->
-    <style>
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
 </body>
 </html>
+
