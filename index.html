@@ -3,7 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="سیستم مدیریت حقوق و دستمزد HRMS - محاسبه فیش حقوقی">
+    <meta name="theme-color" content="#080d1a">
     <title>سیستم مدیریت حقوق و دستمزد - فیش حقوقی</title>
+
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+    </script>
+    <!-- canvas-confetti for celebrations -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js">
+    </script>
+    <!-- Signature Pad -->
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js">
+    </script>
+
     <style>
         :root {
             --bg-deep: #080d1a;
@@ -22,12 +35,30 @@
             --input-focus: rgba(201, 168, 76, 0.6);
             --danger: #c0392b;
             --success: #27ae60;
+            --warning: #e67e22;
             --radius-sm: 8px;
             --radius: 14px;
             --radius-lg: 20px;
             --shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
             --shadow-gold: 0 0 30px rgba(201, 168, 76, 0.12);
             --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+            --transition: 0.3s ease;
+            --delta-positive: #27ae60;
+            --delta-negative: #c0392b;
+        }
+
+        /* Light Theme */
+        [data-theme="light"] {
+            --bg-deep: #f0f2f5;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-card-solid: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #555;
+            --text-muted: #888;
+            --input-bg: rgba(240, 242, 245, 0.9);
+            --input-border: rgba(180, 160, 120, 0.5);
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            --shadow-gold: 0 0 20px rgba(201, 168, 76, 0.15);
         }
 
         * {
@@ -46,12 +77,15 @@
             min-height: 100vh;
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
+            transition: background var(--transition), color var(--transition);
         }
 
+        /* ========== HEADER ========== */
         .app-header {
             text-align: center;
-            padding: 28px 20px 10px;
+            padding: 20px 20px 8px;
             position: relative;
+            z-index: 10;
         }
         .app-header .logo-area {
             display: inline-flex;
@@ -71,88 +105,133 @@
             filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.5));
         }
         .app-header h1 {
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--gold-light);
             letter-spacing: -0.3px;
             white-space: nowrap;
         }
         .app-header .subtitle {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-muted);
             letter-spacing: 1px;
             margin-top: 2px;
         }
+        .header-actions {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 11;
+        }
+        .header-actions button {
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--gold-border);
+            color: var(--gold-light);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-actions button:hover {
+            background: rgba(201, 168, 76, 0.15);
+            border-color: var(--gold);
+        }
 
+        /* ========== LAYOUT ========== */
         .main-container {
-            max-width: 1350px;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 16px 20px 40px;
+            padding: 12px 20px 40px;
             display: grid;
             grid-template-columns: 1fr 1.15fr;
             gap: 22px;
             align-items: start;
         }
-
-        @media (max-width: 1050px) {
+        @media (max-width: 1100px) {
             .main-container {
                 grid-template-columns: 1fr;
                 max-width: 650px;
             }
         }
 
+        /* ========== GLASS CARD ========== */
         .glass-card {
             background: var(--bg-card);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--gold-border);
             border-radius: var(--radius-lg);
-            padding: 22px 24px;
+            padding: 20px 22px;
             box-shadow: var(--shadow), var(--shadow-gold);
-            transition: all 0.3s ease;
+            transition: all var(--transition);
         }
         .glass-card:hover {
             border-color: rgba(201, 168, 76, 0.6);
-            box-shadow: 0 12px 50px rgba(0, 0, 0, 0.5), 0 0 40px rgba(201, 168, 76, 0.08);
         }
         .glass-card .card-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 700;
             color: var(--gold-light);
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
             gap: 8px;
             border-bottom: 1px solid var(--gold-dim);
-            padding-bottom: 12px;
+            padding-bottom: 10px;
             letter-spacing: -0.2px;
+            cursor: pointer;
+            user-select: none;
         }
         .card-title .icon {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
+        }
+        .card-title .collapse-arrow {
+            margin-right: auto;
+            transition: transform var(--transition);
+            font-size: 0.8rem;
+        }
+        .card-title.collapsed .collapse-arrow {
+            transform: rotate(-90deg);
+        }
+        .card-body {
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+        .card-body.collapsed {
+            max-height: 0 !important;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
         }
 
+        /* ========== FORM ========== */
         .form-section {
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
         .form-section .section-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--gold-pale);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             letter-spacing: 1px;
             text-transform: uppercase;
         }
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px 14px;
-            margin-bottom: 6px;
+            gap: 8px 12px;
+            margin-bottom: 4px;
         }
         .form-row.col-3 {
             grid-template-columns: 1fr 1fr 1fr;
-        }
-        .form-row.col-1 {
-            grid-template-columns: 1fr;
         }
         @media (max-width: 500px) {
             .form-row,
@@ -163,14 +242,30 @@
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 3px;
+            gap: 2px;
+            position: relative;
         }
         .form-group label {
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             font-weight: 500;
             color: var(--text-secondary);
             white-space: nowrap;
-            letter-spacing: -0.1px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .form-group label .tooltip-trigger {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgba(201, 168, 76, 0.2);
+            color: var(--gold-light);
+            font-size: 0.6rem;
+            cursor: help;
+            font-weight: 700;
         }
         .form-group input,
         .form-group select {
@@ -178,105 +273,57 @@
             border: 1px solid var(--input-border);
             color: var(--text-primary);
             border-radius: var(--radius-sm);
-            padding: 9px 12px;
-            font-size: 0.85rem;
+            padding: 8px 10px;
+            font-size: 0.82rem;
             font-family: inherit;
-            transition: all 0.2s;
+            transition: all var(--transition);
             width: 100%;
             outline: none;
         }
         .form-group input:focus,
         .form-group select:focus {
             border-color: var(--input-focus);
-            box-shadow: 0 0 12px rgba(201, 168, 76, 0.15);
-            background: rgba(25, 38, 65, 0.75);
+            box-shadow: 0 0 10px rgba(201, 168, 76, 0.15);
+            background: rgba(25, 38, 65, 0.8);
         }
-        .form-group input[type="number"] {
-            font-family: var(--font-mono);
-            letter-spacing: 0.5px;
+        .form-group input.error {
+            border-color: var(--danger) !important;
+            box-shadow: 0 0 8px rgba(192, 57, 43, 0.25);
+        }
+        .form-group .error-msg {
+            font-size: 0.6rem;
+            color: var(--danger);
+            min-height: 14px;
+            margin-top: 1px;
         }
         .form-group input.time-input {
             font-family: var(--font-mono);
             letter-spacing: 1px;
             text-align: center;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
         .form-group select {
             cursor: pointer;
-            font-family: inherit;
         }
         .form-group .unit-hint {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: var(--text-muted);
             margin-top: 1px;
         }
 
-        .toggle-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 4px 0;
-        }
-        .toggle-row label {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-        .toggle-switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-            flex-shrink: 0;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(60, 60, 80, 0.6);
-            border-radius: 24px;
-            transition: 0.3s;
-            border: 1px solid var(--input-border);
-        }
-        .toggle-slider::before {
-            content: "";
-            position: absolute;
-            height: 18px;
-            width: 18px;
-            right: 2px;
-            bottom: 2px;
-            background: #ccc;
-            border-radius: 50%;
-            transition: 0.3s;
-        }
-        .toggle-switch input:checked+.toggle-slider {
-            background: rgba(201, 168, 76, 0.5);
-            border-color: var(--gold);
-        }
-        .toggle-switch input:checked+.toggle-slider::before {
-            transform: translateX(-20px);
-            background: var(--gold-light);
-        }
-
+        /* ========== BUTTONS ========== */
         .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            padding: 10px 20px;
+            padding: 9px 18px;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             cursor: pointer;
             border: none;
-            transition: all 0.3s;
+            transition: all var(--transition);
             font-family: inherit;
             letter-spacing: -0.2px;
             white-space: nowrap;
@@ -287,9 +334,9 @@
             box-shadow: 0 4px 18px rgba(201, 168, 76, 0.3);
         }
         .btn-gold:hover {
-            background: linear-gradient(135deg, #c9a84c, #d4af37);
+            background: linear-gradient(135deg, #c9a84c, #e0c060);
             box-shadow: 0 6px 24px rgba(201, 168, 76, 0.45);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
         .btn-outline {
             background: transparent;
@@ -300,26 +347,41 @@
             background: rgba(201, 168, 76, 0.1);
             border-color: var(--gold);
         }
+        .btn-sm {
+            padding: 5px 12px;
+            font-size: 0.7rem;
+        }
         .btn-row {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 14px;
+            margin-top: 12px;
         }
 
+        /* ========== PAYSLIP ========== */
+        .payslip-card-outer {
+            animation: subtlePulse 4s ease-in-out infinite;
+        }
+        @keyframes subtlePulse {
+            0%,
+            100% {
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(201, 168, 76, 0.12);
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 45px rgba(201, 168, 76, 0.22);
+            }
+        }
         .payslip-card {
             background: #fffef9;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
             border: 2px solid #d4c9a8;
             color: #1a1a1a;
             border-radius: 8px;
-            padding: 28px 30px;
+            padding: 24px 26px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
             font-family: 'Vazirmatn', 'Vazir', 'IRANSans', 'Tahoma', system-ui, sans-serif;
             position: relative;
             overflow: hidden;
-            min-height: 400px;
+            min-height: 380px;
         }
         .payslip-card::before {
             content: "";
@@ -344,56 +406,69 @@
             font-weight: 900;
             letter-spacing: 10px;
         }
+        .payslip-card .draft-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 4rem;
+            color: rgba(192, 57, 43, 0.08);
+            pointer-events: none;
+            white-space: nowrap;
+            font-weight: 900;
+            z-index: 0;
+            display: none;
+        }
+        .payslip-card.draft .draft-watermark {
+            display: block;
+        }
+        .payslip-sticky-header {
+            position: sticky;
+            top: 0;
+            background: #fffef9;
+            z-index: 5;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #c9a84c;
+        }
         .payslip-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 2px solid #c9a84c;
-            padding-bottom: 16px;
-            margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
         }
         .payslip-header .company-info h3 {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #2a2a2a;
             font-weight: 800;
         }
         .payslip-header .company-info .sub {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #777;
         }
         .payslip-header .slip-meta {
             text-align: left;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: #555;
             line-height: 1.7;
-        }
-        .payslip-header .slip-meta strong {
-            color: #1a1a1a;
         }
         .payslip-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             position: relative;
             z-index: 1;
         }
         .payslip-table th,
         .payslip-table td {
-            padding: 9px 10px;
+            padding: 7px 8px;
             text-align: right;
             border-bottom: 1px solid #e8e0cc;
+            transition: background var(--transition);
         }
-        .payslip-table th {
-            background: #faf7ef;
-            color: #5a4a2a;
-            font-weight: 700;
-            font-size: 0.7rem;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
+        .payslip-table tbody tr:hover td {
+            background: rgba(201, 168, 76, 0.06);
         }
         .payslip-table td.amount {
             text-align: left;
@@ -402,6 +477,17 @@
             white-space: nowrap;
             letter-spacing: 0.3px;
         }
+        .payslip-table td.amount .delta {
+            font-size: 0.6rem;
+            margin-right: 4px;
+            font-weight: 700;
+        }
+        .delta-positive {
+            color: var(--delta-positive);
+        }
+        .delta-negative {
+            color: var(--delta-negative);
+        }
         .payslip-table tr.subtotal td {
             font-weight: 700;
             border-top: 2px solid #c9a84c;
@@ -409,7 +495,7 @@
         }
         .payslip-table tr.net td {
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #0a5c2a;
             background: #f0faf0;
             border-top: 2px solid #27ae60;
@@ -421,22 +507,22 @@
             background: #fefcf6;
             color: #8a7030;
             font-weight: 700;
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             letter-spacing: 1px;
-            padding-top: 14px;
+            padding-top: 12px;
             border-bottom: 1px solid #d4c9a8;
         }
         .payslip-footer {
-            margin-top: 18px;
+            margin-top: 14px;
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            font-size: 0.65rem;
+            font-size: 0.62rem;
             color: #888;
             position: relative;
             z-index: 1;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         .payslip-footer .signature-area {
             text-align: center;
@@ -445,9 +531,26 @@
         .payslip-footer .signature-line {
             width: 120px;
             border-top: 1px dashed #aaa;
-            margin: 18px auto 4px;
+            margin: 14px auto 4px;
+        }
+        .payslip-footer .signature-canvas {
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            cursor: crosshair;
         }
 
+        /* ========== CHART PANEL ========== */
+        .chart-container {
+            width: 100%;
+            max-width: 280px;
+            margin: 10px auto;
+            position: relative;
+        }
+        .chart-container canvas {
+            max-height: 200px;
+        }
+
+        /* ========== TOAST ========== */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -457,18 +560,158 @@
             color: #fff;
             padding: 10px 22px;
             border-radius: 30px;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             z-index: 999;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.4s;
+            transition: opacity 0.4s, transform 0.3s;
             border: 1px solid #444;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
         }
         .toast.show {
             opacity: 1;
+            pointer-events: auto;
         }
 
+        /* ========== MODAL ========== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-box {
+            background: var(--bg-card-solid);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--gold-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+        .modal-box h3 {
+            color: var(--gold-light);
+            margin-bottom: 12px;
+        }
+        .modal-close {
+            float: left;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        /* ========== HISTORY LIST ========== */
+        .history-item {
+            padding: 8px 12px;
+            border: 1px solid var(--gold-dim);
+            border-radius: var(--radius-sm);
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 0.75rem;
+        }
+        .history-item:hover {
+            background: rgba(201, 168, 76, 0.08);
+            border-color: var(--gold);
+        }
+
+        /* ========== DRAWER (Mobile) ========== */
+        .drawer-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition);
+        }
+        .drawer-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 450px;
+            height: 100vh;
+            background: var(--bg-card-solid);
+            z-index: 950;
+            overflow-y: auto;
+            transition: right var(--transition);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            padding: 16px;
+        }
+        .drawer.active {
+            right: 0;
+        }
+
+        /* ========== PROGRESS BAR ========== */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--gold);
+            z-index: 2000;
+            transition: width 0.2s;
+            width: 0%;
+            pointer-events: none;
+        }
+
+        /* ========== SKELETON LOADING ========== */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0.05) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* ========== ONBOARDING HIGHLIGHT ========== */
+        .onboarding-highlight {
+            position: relative;
+            z-index: 1050 !important;
+            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 20px var(--gold) !important;
+            border-radius: var(--radius) !important;
+            transition: all var(--transition);
+        }
+        .onboarding-tooltip {
+            position: fixed;
+            background: var(--bg-card-solid);
+            border: 2px solid var(--gold);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            z-index: 1100;
+            max-width: 320px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+            text-align: right;
+        }
+
+        /* ========== PRINT ========== */
         @media print {
             body {
                 background: #fff !important;
@@ -478,12 +721,17 @@
             .glass-card:not(.payslip-card-outer),
             .btn-row,
             .toast,
-            .form-section,
-            .card-title,
+            .progress-bar,
+            .drawer,
+            .drawer-backdrop,
+            .modal-overlay,
+            .header-actions,
+            .onboarding-highlight,
+            .onboarding-tooltip,
+            .chart-container,
             input,
             select,
             label,
-            .toggle-row,
             .btn,
             .main-container {
                 display: none !important;
@@ -492,8 +740,6 @@
                 display: block !important;
                 max-width: 100% !important;
                 padding: 0 !important;
-                margin: 0 !important;
-                grid-template-columns: 1fr !important;
             }
             .payslip-card-outer {
                 display: block !important;
@@ -505,9 +751,8 @@
                 border: none !important;
                 box-shadow: none !important;
                 border-radius: 0 !important;
-                padding: 15px !important;
-                backdrop-filter: none !important;
-                -webkit-backdrop-filter: none !important;
+                padding: 10px !important;
+                animation: none !important;
             }
             .payslip-card {
                 border: 1px solid #ccc !important;
@@ -516,7 +761,8 @@
                 background: #fff !important;
                 page-break-inside: avoid;
             }
-            .payslip-card .watermark {
+            .payslip-card .watermark,
+            .payslip-card .draft-watermark {
                 display: none !important;
             }
             @page {
@@ -525,8 +771,9 @@
             }
         }
 
+        /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 5px;
         }
         ::-webkit-scrollbar-track {
             background: transparent;
@@ -535,204 +782,295 @@
             background: rgba(201, 168, 76, 0.3);
             border-radius: 10px;
         }
-
-        @keyframes subtlePulse {
-            0%,
-            100% {
-                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(201, 168, 76, 0.12);
-            }
-            50% {
-                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45), 0 0 45px rgba(201, 168, 76, 0.22);
-            }
-        }
-        .payslip-card-outer {
-            animation: subtlePulse 4s ease-in-out infinite;
-        }
     </style>
 </head>
 <body>
 
-    <header class="app-header">
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Header -->
+    <header class="app-header" id="appHeader">
         <div class="logo-area">
             <span class="logo-icon">⚜️</span>
             <div>
                 <h1>سیستم مدیریت حقوق و دستمزد</h1>
-                <div class="subtitle">PAYROLL ENGINE — HRMS PLATFORM</div>
+                <div class="subtitle">PAYROLL ENGINE — HRMS PLATFORM v2.0</div>
             </div>
+        </div>
+        <div class="header-actions">
+            <button onclick="toggleTheme()" title="تغییر تم" aria-label="تغییر تم">🌓</button>
+            <button onclick="toggleCompactMode()" title="حالت فشرده" aria-label="حالت فشرده">📐</button>
+            <button onclick="startOnboarding()" title="راهنما" aria-label="راهنما">❓</button>
         </div>
     </header>
 
+    <!-- Mobile Drawer Toggle -->
+    <button class="btn btn-outline btn-sm" id="drawerToggle" style="display:none;margin:8px auto;"
+    onclick="toggleDrawer()">📋 باز کردن تنظیمات</button>
+
+    <!-- Main Container -->
     <div class="main-container">
 
         <!-- Input Panel -->
         <div class="glass-card" id="inputPanel">
-            <div class="card-title"><span class="icon">📋</span> اطلاعات ورودی استاد</div>
-
-            <div class="form-section">
-                <div class="section-label">👤 مشخصات استاد</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>نام و نام خانوادگی</label>
-                        <input type="text" id="teacherName" value="استاد نمونه" placeholder="نام استاد">
-                    </div>
-                    <div class="form-group">
-                        <label>ماه / سال</label>
-                        <input type="text" id="monthYear" value="فروردین ۱۴۰۵" placeholder="ماه و سال">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>ساعات کارکرد ماهانه (HH:mm)</label>
-                        <input type="text" id="hoursWorked" class="time-input" value="160:00" placeholder="مثال: 146:40">
-                        <span class="unit-hint">ورودی به فرمت ساعت:دقیقه — مثال: ۱۴۶:۴۰</span>
-                    </div>
-                    <div class="form-group">
-                        <label>ساعات استاندارد ماهانه (HH:mm)</label>
-                        <input type="text" id="hoursStandard" class="time-input" value="192:00" placeholder="مثال: 192:00">
-                        <span class="unit-hint">به فرمت ساعت:دقیقه — معمولاً ۱۹۲:۰۰</span>
-                    </div>
-                </div>
-                <div class="form-row col-3">
-                    <div class="form-group">
-                        <label>وضعیت تأهل</label>
-                        <select id="isMarried">
-                            <option value="1">متأهل</option>
-                            <option value="0" selected>مجرد</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>تعداد فرزندان</label>
-                        <input type="number" id="childrenCount" value="0" min="0" max="20" step="1">
-                    </div>
-                    <div class="form-group">
-                        <label>نوع بیمه</label>
-                        <select id="insuranceType">
-                            <option value="NONE">بدون بیمه (NONE)</option>
-                            <option value="FULL_BASE">مبنای کامل (FULL_BASE)</option>
-                            <option value="CALCULATED_BASE" selected>مبنای محاسباتی (CALCULATED_BASE)</option>
-                            <option value="LEGAL">قانونی (LEGAL)</option>
-                        </select>
-                    </div>
-                </div>
+            <div class="card-title" onclick="toggleCardBody(this)" aria-expanded="true" role="button" tabindex="0">
+                <span class="icon">📋</span> اطلاعات ورودی استاد
+                <span class="collapse-arrow">▼</span>
             </div>
+            <div class="card-body" id="inputCardBody">
 
-            <div class="form-section">
-                <div class="section-label">💰 تنظیمات پایه حقوق (ریال)</div>
-                <div class="form-row col-3">
-                    <div class="form-group">
-                        <label>حقوق پایه روزانه (F)</label>
-                        <input type="number" id="F" value="1500000" step="1000" min="0">
+                <!-- Teacher Info -->
+                <div class="form-section">
+                    <div class="section-label">👤 مشخصات استاد</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>نام و نام خانوادگی <span class="tooltip-trigger" title="نام کامل استاد جهت درج در فیش">?</span></label>
+                            <input type="text" id="teacherName" value="استاد نمونه" placeholder="نام استاد" aria-label="نام استاد">
+                            <span class="error-msg" id="err-teacherName"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>ماه / سال (تاریخ شمسی)</label>
+                            <input type="text" id="monthYear" value="فروردین ۱۴۰۵" placeholder="ماه و سال" aria-label="ماه و سال">
+                            <span class="error-msg" id="err-monthYear"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>پایه سنوات روزانه (G)</label>
-                        <input type="number" id="G" value="500000" step="1000" min="0">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>ساعات کارکرد ماهانه (HH:mm) <span class="tooltip-trigger" title="ساعات حضور استاد در ماه جاری">?</span></label>
+                            <input type="text" id="hoursWorked" class="time-input" value="160:00" placeholder="مثال: 146:40" aria-label="ساعات کارکرد">
+                            <span class="error-msg" id="err-hoursWorked"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>ساعات استاندارد ماهانه (HH:mm) <span class="tooltip-trigger" title="ساعات موظفی ماهانه (معمولاً 192:00)">?</span></label>
+                            <input type="text" id="hoursStandard" class="time-input" value="192:00" placeholder="مثال: 192:00" aria-label="ساعات استاندارد">
+                            <span class="error-msg" id="err-hoursStandard"></span>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>تعداد روزهای ماه (M)</label>
-                        <input type="number" id="M" value="30" step="1" min="1" max="31">
+                    <div class="form-row col-3">
+                        <div class="form-group">
+                            <label>وضعیت تأهل</label>
+                            <select id="isMarried" aria-label="وضعیت تأهل">
+                                <option value="1">متأهل</option>
+                                <option value="0" selected>مجرد</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>تعداد فرزندان</label>
+                            <input type="number" id="childrenCount" value="0" min="0" max="20" step="1" aria-label="تعداد فرزندان">
+                            <span class="error-msg" id="err-childrenCount"></span>
+                        </div>
+                        <div class="form-group">
+                            <label>نوع بیمه <span class="tooltip-trigger" title="مبنای محاسبه ۷٪ کسر بیمه">?</span></label>
+                            <select id="insuranceType" aria-label="نوع بیمه">
+                                <option value="NONE">بدون بیمه (NONE)</option>
+                                <option value="FULL_BASE">مبنای کامل (FULL_BASE)</option>
+                                <option value="CALCULATED_BASE" selected>مبنای محاسباتی (CALCULATED_BASE)</option>
+                                <option value="LEGAL">قانونی (LEGAL)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
-                <div class="form-row col-3">
-                    <div class="form-group">
-                        <label>نرخ تدریس ساعتی (Dp)</label>
-                        <input type="number" id="Dp" value="200000" step="1000" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>مسکن ماهانه (B)</label>
-                        <input type="number" id="B" value="5000000" step="10000" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>خواربار ماهانه (C)</label>
-                        <input type="number" id="C" value="3000000" step="10000" min="0">
-                    </div>
-                </div>
-                <div class="form-row col-3">
-                    <div class="form-group">
-                        <label>حق تأهل ماهانه (D)</label>
-                        <input type="number" id="D" value="2000000" step="10000" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>حق اولاد هر فرزند (E)</label>
-                        <input type="number" id="E" value="1500000" step="10000" min="0">
-                    </div>
-                </div>
-            </div>
 
-            <div class="form-section">
-                <div class="section-label">🎓 تنظیمات پایه / رتبه (Grade)</div>
-                <div class="form-row col-3">
-                    <div class="form-group">
-                        <label>پایه فعال (Ge)</label>
-                        <select id="Ge">
-                            <option value="1">فعال</option>
-                            <option value="0" selected>غیرفعال</option>
-                        </select>
+                <!-- Salary Settings -->
+                <div class="form-section">
+                    <div class="section-label">💰 تنظیمات پایه حقوق (ریال)</div>
+                    <div class="form-row col-3">
+                        <div class="form-group">
+                            <label>حقوق پایه روزانه (F)</label>
+                            <input type="number" id="F" value="1500000" step="1000" min="0" aria-label="F">
+                        </div>
+                        <div class="form-group">
+                            <label>پایه سنوات روزانه (G)</label>
+                            <input type="number" id="G" value="500000" step="1000" min="0" aria-label="G">
+                        </div>
+                        <div class="form-group">
+                            <label>تعداد روزهای ماه (M)</label>
+                            <input type="number" id="M" value="30" step="1" min="1" max="31" aria-label="M">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>ضریب نوع پایه (Gt)</label>
-                        <input type="number" id="Gt" value="10" step="1" min="0">
+                    <div class="form-row col-3">
+                        <div class="form-group">
+                            <label>نرخ تدریس ساعتی (Dp)</label>
+                            <input type="number" id="Dp" value="200000" step="1000" min="0" aria-label="Dp">
+                        </div>
+                        <div class="form-group">
+                            <label>مسکن ماهانه (B)</label>
+                            <input type="number" id="B" value="5000000" step="10000" min="0" aria-label="B">
+                        </div>
+                        <div class="form-group">
+                            <label>خواربار ماهانه (C)</label>
+                            <input type="number" id="C" value="3000000" step="10000" min="0" aria-label="C">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>درصد پایه - ریال (Gp)</label>
-                        <input type="number" id="Gp" value="500000" step="10000" min="0">
-                        <span class="unit-hint">GradeBonus = Gt × Gp</span>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>حق تأهل ماهانه (D)</label>
+                            <input type="number" id="D" value="2000000" step="10000" min="0" aria-label="D">
+                        </div>
+                        <div class="form-group">
+                            <label>حق اولاد هر فرزند (E)</label>
+                            <input type="number" id="E" value="1500000" step="10000" min="0" aria-label="E">
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="form-section">
-                <div class="section-label">🎁 تنظیمات عیدی سالانه (ریال)</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>حداقل عیدی سالانه (E_min)</label>
-                        <input type="number" id="E_min" value="60000000" step="100000" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label>حداکثر عیدی سالانه (E_max)</label>
-                        <input type="number" id="E_max" value="90000000" step="100000" min="0">
+                <!-- Grade Settings -->
+                <div class="form-section">
+                    <div class="section-label">🎓 تنظیمات پایه / رتبه (Grade)</div>
+                    <div class="form-row col-3">
+                        <div class="form-group">
+                            <label>پایه فعال (Ge)</label>
+                            <select id="Ge" aria-label="Ge">
+                                <option value="1">فعال</option>
+                                <option value="0" selected>غیرفعال</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>ضریب نوع پایه (Gt)</label>
+                            <input type="number" id="Gt" value="10" step="1" min="0" aria-label="Gt">
+                        </div>
+                        <div class="form-group">
+                            <label>درصد پایه - ریال (Gp)</label>
+                            <input type="number" id="Gp" value="500000" step="10000" min="0" aria-label="Gp">
+                            <span class="unit-hint">GradeBonus = Gt × Gp</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="btn-row">
-                <button class="btn btn-gold" onclick="calculateAndRender()" title="محاسبه و نمایش فیش حقوقی">
-                    🔄 محاسبه و بروزرسانی فیش
-                </button>
-                <button class="btn btn-outline" onclick="printPayslip()" title="نسخه قابل پرینت فیش">
-                    🖨️ پرینت فیش (A5)
-                </button>
-                <button class="btn btn-outline" onclick="resetToDefaults()" title="بازنشانی به مقادیر پیش‌فرض">
-                    ↩️ بازنشانی
-                </button>
+                <!-- Eidi Settings -->
+                <div class="form-section">
+                    <div class="section-label">🎁 تنظیمات عیدی سالانه (ریال)</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>حداقل عیدی سالانه (E_min)</label>
+                            <input type="number" id="E_min" value="60000000" step="100000" min="0" aria-label="E_min">
+                        </div>
+                        <div class="form-group">
+                            <label>حداکثر عیدی سالانه (E_max)</label>
+                            <input type="number" id="E_max" value="90000000" step="100000" min="0" aria-label="E_max">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="btn-row">
+                    <button class="btn btn-gold" onclick="calculateAndRender()" title="محاسبه و نمایش فیش حقوقی">
+                        🔄 محاسبه و بروزرسانی فیش
+                    </button>
+                    <button class="btn btn-outline" onclick="previewPrint()" title="پیش‌نمایش چاپ">
+                        👁️ پیش‌نمایش چاپ
+                    </button>
+                    <button class="btn btn-outline" onclick="printPayslip()" title="پرینت مستقیم">
+                        🖨️ پرینت فیش (A5)
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="saveProfile()" title="ذخیره پروفایل">💾 ذخیره</button>
+                    <button class="btn btn-outline btn-sm" onclick="loadProfile()" title="بارگذاری پروفایل">📂 بارگذاری</button>
+                    <button class="btn btn-outline btn-sm" onclick="resetToDefaults()" title="بازنشانی">↩️ بازنشانی</button>
+                    <button class="btn btn-outline btn-sm" onclick="exportCSV()" title="خروجی CSV">📄 CSV</button>
+                </div>
             </div>
         </div>
 
         <!-- Payslip Panel -->
         <div class="glass-card payslip-card-outer" id="payslipPanel">
-            <div class="card-title"><span class="icon">📄</span> فیش حقوقی صادرشده</div>
+            <div class="card-title">
+                <span class="icon">📄</span> فیش حقوقی صادرشده
+                <span style="margin-right:auto;font-size:0.7rem;" id="payslipStatus">پیش‌نویس</span>
+                <button class="btn btn-sm btn-outline" onclick="togglePayslipCompact()" style="margin-right:8px;">🗂️ فشرده</button>
+                <button class="btn btn-sm btn-outline" onclick="confirmAndLock()" style="margin-right:4px;" id="btnLock">🔒 تأیید و قفل</button>
+            </div>
             <div class="payslip-card" id="payslipContent">
                 <div class="watermark">PAYSLIP</div>
+                <div class="draft-watermark" id="draftWatermark">پیش‌نویس</div>
                 <div id="payslipInner" style="position:relative;z-index:1;">
-                    <div class="payslip-header">
-                        <div class="company-info">
-                            <h3>📜 فیش حقوقی</h3>
-                            <div class="sub">سیستم مدیریت حقوق و دستمزد HRMS</div>
+                    <div class="payslip-sticky-header" id="payslipStickyHeader">
+                        <div class="payslip-header">
+                            <div class="company-info">
+                                <h3>📜 فیش حقوقی</h3>
+                                <div class="sub">سیستم مدیریت حقوق و دستمزد HRMS</div>
+                            </div>
+                            <div class="slip-meta" id="slipMeta"></div>
                         </div>
-                        <div class="slip-meta" id="slipMeta"></div>
                     </div>
                     <table class="payslip-table" id="payslipTable">
                         <tbody id="payslipTbody"></tbody>
                     </table>
                     <div class="payslip-footer" id="payslipFooter"></div>
+                    <!-- Chart -->
+                    <div class="chart-container" id="chartContainer">
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                    <!-- Signature -->
+                    <div style="margin-top:10px;text-align:center;">
+                        <canvas id="signatureCanvas" class="signature-canvas" width="200" height="60" style="display:none;"></canvas>
+                        <button class="btn btn-sm btn-outline" onclick="clearSignature()" id="btnClearSig" style="display:none;">پاک کردن امضا</button>
+                    </div>
                 </div>
+            </div>
+            <!-- History -->
+            <div style="margin-top:12px;" id="historySection">
+                <div class="section-label">📋 تاریخچه فیش‌ها (۵ مورد آخر)</div>
+                <div id="historyList"></div>
             </div>
         </div>
     </div>
 
-    <div class="toast" id="toast"></div>
+    <!-- Toast -->
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- Print Preview Modal -->
+    <div class="modal-overlay" id="printPreviewModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('printPreviewModal')">✕</button>
+            <h3>👁️ پیش‌نمایش چاپ</h3>
+            <div id="printPreviewContent" style="background:#fff;padding:10px;border-radius:4px;"></div>
+            <button class="btn btn-gold" onclick="printPayslip();closeModal('printPreviewModal');" style="margin-top:10px;">🖨️ تأیید و پرینت</button>
+        </div>
+    </div>
+
+    <!-- Onboarding Tooltip -->
+    <div class="onboarding-tooltip" id="onboardingTooltip" style="display:none;">
+        <div id="onboardingText"></div>
+        <div style="margin-top:8px;display:flex;gap:6px;justify-content:flex-end;">
+            <button class="btn btn-sm btn-outline" onclick="prevOnboardingStep()">⏪ قبل</button>
+            <button class="btn btn-sm btn-gold" id="onboardingNextBtn">بعد ⏩</button>
+            <button class="btn btn-sm btn-outline" onclick="endOnboarding()">✕ بستن</button>
+        </div>
+    </div>
+
+    <!-- Mobile Drawer Backdrop -->
+    <div class="drawer-backdrop" id="drawerBackdrop" onclick="toggleDrawer()"></div>
+    <!-- Mobile Drawer -->
+    <div class="drawer" id="mobileDrawer"></div>
+
+    <!-- Keyboard shortcut hint -->
+    <div style="position:fixed;bottom:70px;right:12px;font-size:0.6rem;color:var(--text-muted);z-index:10;pointer-events:none;" id="shortcutHint">
+        Ctrl+S ذخیره | Ctrl+P پرینت | Ctrl+Z برگشت | Ctrl+Y جلو
+    </div>
 
     <script>
         (function() {
+            // ──────────────────────────────────────
+            //  GLOBAL STATE
+            // ──────────────────────────────────────
+            const STATE = {
+                previousResult: null, // for delta comparison
+                history: [], // last 5 payslips
+                isLocked: false,
+                undoStack: [],
+                redoStack: [],
+                maxUndo: 50,
+                compactMode: false,
+                compactPayslip: false,
+                onboardingStep: 0,
+                onboardingActive: false,
+                dirty: false,
+            };
+
+            // ──────────────────────────────────────
+            //  UTILITY FUNCTIONS
+            // ──────────────────────────────────────
             function parseTimeToHours(timeStr) {
                 const trimmed = timeStr.trim();
                 const parts = trimmed.split(':');
@@ -759,14 +1097,76 @@
                 return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
             }
 
-            function showToast(msg) {
+            function showToast(msg, type = 'info') {
                 const toast = document.getElementById('toast');
                 toast.textContent = msg;
+                toast.style.background = type === 'error' ? '#c0392b' : type === 'success' ? '#27ae60' : '#1a1a1a';
                 toast.classList.add('show');
                 clearTimeout(toast._timeout);
-                toast._timeout = setTimeout(() => toast.classList.remove('show'), 2500);
+                toast._timeout = setTimeout(() => toast.classList.remove('show'), 2800);
             }
 
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function setProgress(percent) {
+                const bar = document.getElementById('progressBar');
+                bar.style.width = percent + '%';
+                if (percent >= 100) setTimeout(() => { bar.style.width = '0%'; }, 400);
+            }
+
+            // ──────────────────────────────────────
+            //  VALIDATION
+            // ──────────────────────────────────────
+            function validateField(id, value, rules) {
+                const errEl = document.getElementById('err-' + id);
+                const inputEl = document.getElementById(id);
+                if (!errEl) return true;
+                let error = '';
+                for (const rule of rules) {
+                    if (rule.type === 'required' && (!value || value.toString().trim() === '')) {
+                        error = rule.msg || 'این فیلد الزامی است.';
+                        break;
+                    }
+                    if (rule.type === 'min' && parseFloat(value) < rule.val) {
+                        error = rule.msg || `حداقل مقدار ${rule.val} است.`;
+                        break;
+                    }
+                    if (rule.type === 'timeFormat' && value && !/^\d{1,4}:\d{2}$/.test(value.trim()) && !/^\d+(\.\d+)?$/.test(
+                            value.trim())) {
+                        error = 'فرمت ساعت:دقیقه (مثال: 160:00)';
+                        break;
+                    }
+                }
+                errEl.textContent = error;
+                if (inputEl) inputEl.classList.toggle('error', !!error);
+                return !error;
+            }
+
+            function validateAll(inputs) {
+                const validations = [
+                    ['hoursWorked', inputs.hoursWorkedRaw, [{ type: 'required', msg: 'ساعت کارکرد الزامی است.' },
+                        { type: 'timeFormat' }
+                    ]],
+                    ['hoursStandard', inputs.hoursStandardRaw, [{ type: 'required', msg: 'ساعت استاندارد الزامی است.' },
+                        { type: 'timeFormat' }
+                    ]],
+                    ['childrenCount', inputs.childrenCount, [{ type: 'min', val: 0, msg: 'تعداد فرزند نمی‌تواند منفی باشد.' }]],
+                    ['M', inputs.M, [{ type: 'min', val: 1, msg: 'حداقل ۱ روز.' }]],
+                ];
+                let allValid = true;
+                validations.forEach(([id, value, rules]) => {
+                    if (!validateField(id, value, rules)) allValid = false;
+                });
+                return allValid;
+            }
+
+            // ──────────────────────────────────────
+            //  READ INPUTS
+            // ──────────────────────────────────────
             function readInputs() {
                 const teacherName = document.getElementById('teacherName').value.trim() || 'استاد';
                 const monthYear = document.getElementById('monthYear').value.trim() || '---';
@@ -795,6 +1195,8 @@
                 return {
                     teacherName,
                     monthYear,
+                    hoursWorkedRaw,
+                    hoursStandardRaw,
                     H,
                     Hm,
                     isMarried,
@@ -816,27 +1218,12 @@
                 };
             }
 
+            // ──────────────────────────────────────
+            //  PAYROLL ENGINE
+            // ──────────────────────────────────────
             function runPayrollEngine(inputs) {
-                const {
-                    H,
-                    Hm,
-                    isMarried,
-                    childrenCount,
-                    insuranceType,
-                    F,
-                    G,
-                    M,
-                    Dp,
-                    B,
-                    C,
-                    D,
-                    E,
-                    Ge,
-                    Gt,
-                    Gp,
-                    E_min,
-                    E_max,
-                } = inputs;
+                const { H, Hm, isMarried, childrenCount, insuranceType, F, G, M, Dp, B, C, D, E, Ge, Gt, Gp, E_min,
+                    E_max } = inputs;
 
                 const P = Hm > 0 ? truncate2(H / Hm) : 0;
                 const GradeBonus = Ge ? (Gt * Gp) : 0;
@@ -850,36 +1237,21 @@
                 const K_base = BasePay + MonthlySeveranceBase + Housing + Grocery + Marriage + Children + GradeBonus;
 
                 const R_fixed = F + G + (GradeBonus / M);
-
-                // مبلغ هدف همیشه از فرمول محاسبه می‌شود، بدون ورودی دستی
                 const TargetAmount = (H * Dp) + (G * M * P) + GradeBonus;
 
                 const severanceFactor = M / 12;
                 const leaveFactor = 26 / 12;
                 const combinedFactor = severanceFactor + leaveFactor;
 
-                let X_final = 0;
-                let hypothesisUsed = 0;
-                let annualEidi_final = 0;
-                let monthlyEidi_final = 0;
-
-                function computeGrossTotal(X_val, annEidi) {
-                    const monEidi = (annEidi / 12) * P;
-                    const R_daily = (P > 0) ?
-                        F + G + (GradeBonus / M) + (X_val / (M * P)) :
-                        F + G + (GradeBonus / M);
-                    const severancePay = R_daily * severanceFactor * P;
-                    const leavePay = R_daily * leaveFactor * P;
-                    return K_base + X_val + monEidi + severancePay + leavePay;
-                }
+                let X_final = 0,
+                    hypothesisUsed = 0,
+                    annualEidi_final = 0,
+                    monthlyEidi_final = 0;
 
                 function computeActualAnnualEidi(X_val) {
-                    const R_daily = (P > 0) ?
-                        F + G + (GradeBonus / M) + (X_val / (M * P)) :
-                        F + G + (GradeBonus / M);
+                    const R_daily = (P > 0) ? F + G + (GradeBonus / M) + (X_val / (M * P)) : F + G + (GradeBonus / M);
                     const criterionMonthly = R_daily * M;
-                    const rawAnnual = criterionMonthly * 2;
-                    return Math.max(E_min, Math.min(E_max, rawAnnual));
+                    return Math.max(E_min, Math.min(E_max, criterionMonthly * 2));
                 }
 
                 if (P <= 0) {
@@ -891,19 +1263,15 @@
                     const A = F + G + (GradeBonus / M);
                     const denom = 1 + (combinedFactor / M);
 
-                    const annEidi_h1 = E_min;
-                    const monEidi_h1 = (annEidi_h1 / 12) * P;
+                    const monEidi_h1 = (E_min / 12) * P;
                     let X_h1 = (TargetAmount - K_base - monEidi_h1 - A * combinedFactor * P) / denom;
                     if (X_h1 < 0) X_h1 = 0;
-                    const actualEidi_h1 = computeActualAnnualEidi(X_h1);
-                    const h1_valid = actualEidi_h1 <= E_min + 1;
+                    const h1_valid = computeActualAnnualEidi(X_h1) <= E_min + 1;
 
-                    const annEidi_h2 = E_max;
-                    const monEidi_h2 = (annEidi_h2 / 12) * P;
+                    const monEidi_h2 = (E_max / 12) * P;
                     let X_h2 = (TargetAmount - K_base - monEidi_h2 - A * combinedFactor * P) / denom;
                     if (X_h2 < 0) X_h2 = 0;
-                    const actualEidi_h2 = computeActualAnnualEidi(X_h2);
-                    const h2_valid = actualEidi_h2 >= E_max - 1;
+                    const h2_valid = computeActualAnnualEidi(X_h2) >= E_max - 1;
 
                     const AccFixed = R_fixed * P * combinedFactor;
                     const denom_h3 = 476 / 360;
@@ -912,30 +1280,19 @@
                     const actualEidi_h3 = computeActualAnnualEidi(X_h3);
                     const h3_valid = (actualEidi_h3 > E_min + 1) && (actualEidi_h3 < E_max - 1);
 
-                    if (h1_valid && X_h1 >= 0) {
-                        X_final = X_h1;
+                    if (h1_valid && X_h1 >= 0) { X_final = X_h1;
                         hypothesisUsed = 1;
-                        annualEidi_final = E_min;
-                    } else if (h2_valid && X_h2 >= 0) {
-                        X_final = X_h2;
+                        annualEidi_final = E_min; } else if (h2_valid && X_h2 >= 0) { X_final = X_h2;
                         hypothesisUsed = 2;
-                        annualEidi_final = E_max;
-                    } else if (h3_valid && X_h3 >= 0) {
-                        X_final = X_h3;
+                        annualEidi_final = E_max; } else if (h3_valid && X_h3 >= 0) { X_final = X_h3;
                         hypothesisUsed = 3;
-                        annualEidi_final = actualEidi_h3;
-                    } else {
-                        X_final = Math.max(0, X_h3);
+                        annualEidi_final = actualEidi_h3; } else { X_final = Math.max(0, X_h3);
                         hypothesisUsed = 3;
-                        annualEidi_final = computeActualAnnualEidi(X_final);
-                    }
+                        annualEidi_final = computeActualAnnualEidi(X_final); }
                     monthlyEidi_final = (annualEidi_final / 12) * P;
                 }
 
-                const R_daily = (P > 0) ?
-                    F + G + (GradeBonus / M) + (X_final / (M * P)) :
-                    F + G + (GradeBonus / M);
-
+                const R_daily = (P > 0) ? F + G + (GradeBonus / M) + (X_final / (M * P)) : F + G + (GradeBonus / M);
                 const MonthlySeverancePay = R_daily * severanceFactor * P;
                 const MonthlyLeavePay = R_daily * leaveFactor * P;
                 const GrossTotal = K_base + X_final + monthlyEidi_final + MonthlySeverancePay + MonthlyLeavePay;
@@ -985,113 +1342,736 @@
                 };
             }
 
-            function renderPayslip(inputs, result) {
-                const {
-                    teacherName,
-                    monthYear,
-                    isMarried,
-                    childrenCount,
-                    insuranceType,
-                } = inputs;
+            // ──────────────────────────────────────
+            //  DELTA COMPARISON
+            // ──────────────────────────────────────
+            function computeDelta(current, previous) {
+                if (!previous) return {};
+                const delta = {};
+                const keys = ['BasePay', 'MonthlySeveranceBase', 'Housing', 'Grocery', 'Marriage', 'Children', 'K_base',
+                    'X', 'MonthlySeverancePay', 'MonthlyLeavePay', 'annualEidi', 'monthlyEidi', 'GrossTotal',
+                    'insuranceDeduction', 'netPayment'
+                ];
+                keys.forEach(k => {
+                    if (current[k] !== undefined && previous[k] !== undefined) {
+                        delta[k] = current[k] - previous[k];
+                    }
+                });
+                return delta;
+            }
 
-                // نمایش Hm به صورت اعشاری (با دو رقم قطع شده) یا فرمت ساعت:دقیقه؟
-                // بهتر است مقدار اعشاری ذخیره شود، اما در نمایش می‌توانیم به صورت اعشاری نشان دهیم.
-                const HmDisplay = result.Hm.toFixed(2);
+            // ──────────────────────────────────────
+            //  RENDER PAYSLIP
+            // ──────────────────────────────────────
+            function renderPayslip(inputs, result) {
+                const { teacherName, monthYear, isMarried, childrenCount, insuranceType } = inputs;
+                const delta = computeDelta(result, STATE.previousResult);
 
                 document.getElementById('slipMeta').innerHTML = `
                     <div><strong>نام استاد:</strong> ${escapeHtml(teacherName)}</div>
                     <div><strong>دوره:</strong> ${escapeHtml(monthYear)}</div>
-                    <div><strong>ساعت کارکرد:</strong> ${result.H.toFixed(2)} از ${HmDisplay} (ضریب P: ${result.P.toFixed(2)})</div>
+                    <div><strong>ساعت کارکرد:</strong> ${result.H.toFixed(2)} از ${result.Hm.toFixed(2)} (P: ${result.P.toFixed(2)})</div>
                     <div><strong>تأهل:</strong> ${isMarried ? 'متأهل' : 'مجرد'} | <strong>فرزندان:</strong> ${childrenCount}</div>
                 `;
 
+                const makeDeltaSpan = (key) => {
+                    if (!delta[key] || delta[key] === 0) return '';
+                    const cls = delta[key] > 0 ? 'delta-positive' : 'delta-negative';
+                    const sign = delta[key] > 0 ? '+' : '';
+                    return `<span class="delta ${cls}">${sign}${formatRial(delta[key])}</span>`;
+                };
+
                 const rows = [];
-                rows.push({ label: '📌 اقلام ثابت فیش', cls: 'section-label-row', amount: null });
-                rows.push({ label: 'حقوق پایه (BasePay)', amount: result.BasePay,
-                    desc: `(F×M)×P = (${formatRial(toRial(inputs.F))}×${inputs.M})×${result.P.toFixed(2)}` });
-                rows.push({ label: 'سنوات ماهانه (MonthlySeverance)', amount: result.MonthlySeveranceBase,
-                    desc: `(G×M)×P` });
-                rows.push({ label: 'مسکن (Housing)', amount: result.Housing, desc: `B×P` });
-                rows.push({ label: 'خواربار (Grocery)', amount: result.Grocery, desc: `C×P` });
-                if (isMarried) rows.push({ label: 'حق تأهل (Marriage)', amount: result.Marriage, desc: `D×P` });
-                if (childrenCount > 0) rows.push({ label: `حق اولاد (${childrenCount} فرزند)`,
-                    amount: result.Children, desc: `E×${childrenCount}×P` });
-                if (result.GradeBonus > 0) rows.push({ label: 'پاداش پایه/رتبه (GradeBonus)',
-                    amount: result.GradeBonus, desc: 'Gt×Gp — غیروابسته به P' });
-                rows.push({ label: 'جمع اقلام ثابت (K_base)', amount: result.K_base, cls: 'subtotal' });
+                if (!STATE.compactPayslip) {
+                    rows.push({ label: '📌 اقلام ثابت فیش', cls: 'section-label-row', amount: null });
+                    rows.push({ label: 'حقوق پایه (BasePay)', amount: result.BasePay, deltaKey: 'BasePay',
+                        desc: `(F×M)×P` });
+                    rows.push({ label: 'سنوات ماهانه', amount: result.MonthlySeveranceBase,
+                        deltaKey: 'MonthlySeveranceBase', desc: `(G×M)×P` });
+                    rows.push({ label: 'مسکن (Housing)', amount: result.Housing, deltaKey: 'Housing',
+                    desc: `B×P` });
+                    rows.push({ label: 'خواربار (Grocery)', amount: result.Grocery, deltaKey: 'Grocery',
+                    desc: `C×P` });
+                    if (isMarried) rows.push({ label: 'حق تأهل', amount: result.Marriage, deltaKey: 'Marriage',
+                        desc: `D×P` });
+                    if (childrenCount > 0) rows.push({ label: `حق اولاد (${childrenCount} فرزند)`, amount: result.Children,
+                        deltaKey: 'Children', desc: `E×${childrenCount}×P` });
+                    if (result.GradeBonus > 0) rows.push({ label: 'پاداش پایه/رتبه', amount: result.GradeBonus,
+                        desc: 'Gt×Gp' });
+                    rows.push({ label: 'جمع اقلام ثابت (K_base)', amount: result.K_base, cls: 'subtotal',
+                        deltaKey: 'K_base' });
 
-                rows.push({ label: '🎁 عیدی', cls: 'section-label-row', amount: null });
-                rows.push({ label: `عیدی سالانه (فرضیه ${result.hypothesisUsed})`, amount: result.annualEidi,
-                    desc: result.hypothesisUsed === 1 ? 'کف (E_min)' : result.hypothesisUsed === 2 ? 'سقف (E_max)' : 'شناور' });
-                rows.push({ label: 'عیدی ماهانه (MonthlyEidi)', amount: result.monthlyEidi,
-                    desc: `(AnnualEidi/12)×P` });
+                    rows.push({ label: '🎁 عیدی', cls: 'section-label-row', amount: null });
+                    rows.push({ label: `عیدی سالانه (فرضیه ${result.hypothesisUsed})`, amount: result.annualEidi,
+                        deltaKey: 'annualEidi',
+                        desc: result.hypothesisUsed === 1 ? 'کف' : result.hypothesisUsed === 2 ? 'سقف' : 'شناور' });
+                    rows.push({ label: 'عیدی ماهانه', amount: result.monthlyEidi, deltaKey: 'monthlyEidi',
+                        desc: `(AnnualEidi/12)×P` });
 
-                rows.push({ label: '🎯 پاداش تدریس', cls: 'section-label-row', amount: null });
-                rows.push({ label: 'پاداش تدریس (X)', amount: result.X,
-                    desc: 'متغیر حل‌شده برای رسیدن به مبلغ هدف' });
-                rows.push({ label: 'حقوق معیار روزانه (R_daily)', amount: toRial(result.R_daily),
-                    desc: 'F+G+(GradeBonus/M)+(X/(M×P))', isInfo: true });
+                    rows.push({ label: '🎯 پاداش تدریس', cls: 'section-label-row', amount: null });
+                    rows.push({ label: 'پاداش تدریس (X)', amount: result.X, deltaKey: 'X',
+                        desc: 'متغیر حل‌شده' });
+                    rows.push({ label: 'حقوق معیار روزانه (R_daily)', amount: toRial(result.R_daily), isInfo: true,
+                        desc: 'F+G+(GradeBonus/M)+(X/(M×P))' });
 
-                rows.push({ label: '📅 سنوات و مرخصی', cls: 'section-label-row', amount: null });
-                rows.push({ label: 'سنوات پایان خدمت ماهانه', amount: result.MonthlySeverancePay,
-                    desc: `R_daily×(${inputs.M}/12)×P` });
-                rows.push({ label: 'ذخیره مرخصی ماهانه', amount: result.MonthlyLeavePay, desc: 'R_daily×(26/12)×P' });
+                    rows.push({ label: '📅 سنوات و مرخصی', cls: 'section-label-row', amount: null });
+                    rows.push({ label: 'سنوات پایان خدمت', amount: result.MonthlySeverancePay,
+                        deltaKey: 'MonthlySeverancePay', desc: `R_daily×(${inputs.M}/12)×P` });
+                    rows.push({ label: 'ذخیره مرخصی', amount: result.MonthlyLeavePay, deltaKey: 'MonthlyLeavePay',
+                        desc: 'R_daily×(26/12)×P' });
+                } else {
+                    // Compact mode
+                    rows.push({ label: 'جمع اقلام ثابت', amount: result.K_base, cls: 'subtotal',
+                    deltaKey: 'K_base' });
+                    rows.push({ label: 'عیدی ماهانه', amount: result.monthlyEidi, deltaKey: 'monthlyEidi' });
+                    rows.push({ label: 'پاداش تدریس (X)', amount: result.X, deltaKey: 'X' });
+                    rows.push({ label: 'سنوات + مرخصی', amount: toRial(result.MonthlySeverancePay + result
+                            .MonthlyLeavePay) });
+                }
 
-                rows.push({ label: '💰 جمع ناخالص (GrossTotal)', amount: result.GrossTotal, cls: 'subtotal' });
-                rows.push({ label: `🛡️ کسر بیمه (۷٪) — نوع: ${insuranceType}`, amount: result.insuranceDeduction,
-                    cls: 'deduction', desc: `مبنا: ${formatRial(result.insuranceBase)} ریال` });
-                rows.push({ label: '✅ خالص پرداختی (Net)', amount: result.netPayment, cls: 'net' });
+                rows.push({ label: '💰 جمع ناخالص (GrossTotal)', amount: result.GrossTotal, cls: 'subtotal',
+                    deltaKey: 'GrossTotal' });
+                rows.push({ label: `🛡️ کسر بیمه (۷٪)`, amount: result.insuranceDeduction, cls: 'deduction',
+                    deltaKey: 'insuranceDeduction', desc: `مبنا: ${formatRial(result.insuranceBase)} ریال` });
+                rows.push({ label: '✅ خالص پرداختی (Net)', amount: result.netPayment, cls: 'net',
+                deltaKey: 'netPayment' });
 
                 const tbody = document.getElementById('payslipTbody');
                 tbody.innerHTML = rows.map(r => {
                     const cls = r.cls || '';
                     const amountCell = r.amount !== null && r.amount !== undefined ?
-                        `<td class="amount ${r.isInfo ? 'info' : ''}">${formatRial(r.amount)} ریال</td>` :
+                        `<td class="amount">${makeDeltaSpan(r.deltaKey)}${formatRial(r.amount)} ریال</td>` :
                         `<td></td>`;
-                    const descCell = r.desc ? `<span style="font-size:0.6rem;color:#999;display:block;">${r.desc}</span>` : '';
-                    return `<tr class="${cls}">
-                        <td>${r.label}${descCell}</td>
-                        ${amountCell}
-                    </tr>`;
+                    const descCell = r.desc ? `<span style="font-size:0.55rem;color:#999;display:block;">${r.desc}</span>` :
+                        '';
+                    return `<tr class="${cls}"><td>${r.label}${descCell}</td>${amountCell}</tr>`;
                 }).join('');
 
                 document.getElementById('payslipFooter').innerHTML = `
                     <div>
-                        <div>📌 مبلغ هدف (فرمول): <strong>${formatRial(result.TargetAmount)} ریال</strong></div>
-                        <div style="margin-top:4px;">⏱️ ضریب کارکرد P: <strong>${result.P.toFixed(2)}</strong> | فرضیه عیدی: <strong>${result.hypothesisUsed}</strong></div>
+                        <div>📌 مبلغ هدف: <strong>${formatRial(result.TargetAmount)} ریال</strong></div>
+                        <div style="margin-top:2px;">⏱️ ضریب P: <strong>${result.P.toFixed(2)}</strong> | عیدی: <strong>فرضیه ${result.hypothesisUsed}</strong></div>
                     </div>
                     <div class="signature-area">
                         <div class="signature-line"></div>
                         <div>مهر و امضا</div>
                     </div>
                 `;
+
+                // Update chart
+                updateChart(result);
+
+                // Update previous
+                STATE.previousResult = { ...result };
+
+                // Update status
+                updatePayslipStatus();
+
+                // Add to history
+                addToHistory(inputs, result);
             }
 
-            function escapeHtml(str) {
-                const div = document.createElement('div');
-                div.textContent = str;
-                return div.innerHTML;
+            // ──────────────────────────────────────
+            //  CHART
+            // ──────────────────────────────────────
+            let chartInstance = null;
+
+            function updateChart(result) {
+                const ctx = document.getElementById('doughnutChart');
+                if (!ctx) return;
+                const data = {
+                    labels: ['اقلام ثابت', 'عیدی', 'پاداش تدریس', 'سنوات و مرخصی', 'کسورات'],
+                    datasets: [{
+                        data: [
+                            result.K_base,
+                            result.monthlyEidi,
+                            result.X,
+                            result.MonthlySeverancePay + result.MonthlyLeavePay,
+                            result.insuranceDeduction,
+                        ],
+                        backgroundColor: [
+                            'rgba(201,168,76,0.7)',
+                            'rgba(39,174,96,0.6)',
+                            'rgba(52,152,219,0.6)',
+                            'rgba(155,89,182,0.6)',
+                            'rgba(231,76,60,0.6)',
+                        ],
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                    }],
+                };
+                if (chartInstance) chartInstance.destroy();
+                chartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: { position: 'bottom', labels: { font: { size: 10 }, color: '#888',
+                                    padding: 12 } },
+                        },
+                        cutout: '55%',
+                    },
+                });
             }
 
-            function calculateAndRender() {
-                const inputs = readInputs();
-                if (inputs.Hm <= 0) {
-                    showToast('⚠️ ساعات استاندارد ماهانه باید بزرگتر از صفر باشد.');
-                    return;
+            // ──────────────────────────────────────
+            //  HISTORY
+            // ──────────────────────────────────────
+            function addToHistory(inputs, result) {
+                const entry = {
+                    date: new Date().toLocaleString('fa-IR'),
+                    teacher: inputs.teacherName,
+                    period: inputs.monthYear,
+                    net: result.netPayment,
+                    data: { inputs: { ...inputs }, result: { ...result } },
+                };
+                STATE.history.unshift(entry);
+                if (STATE.history.length > 5) STATE.history.pop();
+                renderHistory();
+            }
+
+            function renderHistory() {
+                const container = document.getElementById('historyList');
+                if (!container) return;
+                container.innerHTML = STATE.history.map((h, i) => `
+                    <div class="history-item" onclick="restoreHistory(${i})" title="کلیک برای بازیابی">
+                        🕒 ${h.date} — ${h.teacher} — ${h.period} — خالص: ${formatRial(h.net)} ریال
+                    </div>
+                `).join('');
+            }
+
+            function restoreHistory(index) {
+                if (index >= STATE.history.length) return;
+                const entry = STATE.history[index];
+                const inp = entry.data.inputs;
+                document.getElementById('teacherName').value = inp.teacherName;
+                document.getElementById('monthYear').value = inp.monthYear;
+                document.getElementById('hoursWorked').value = inp.hoursWorkedRaw || '160:00';
+                document.getElementById('hoursStandard').value = inp.hoursStandardRaw || '192:00';
+                document.getElementById('isMarried').value = inp.isMarried ? '1' : '0';
+                document.getElementById('childrenCount').value = inp.childrenCount;
+                document.getElementById('insuranceType').value = inp.insuranceType;
+                document.getElementById('F').value = inp.F;
+                document.getElementById('G').value = inp.G;
+                document.getElementById('M').value = inp.M;
+                document.getElementById('Dp').value = inp.Dp;
+                document.getElementById('B').value = inp.B;
+                document.getElementById('C').value = inp.C;
+                document.getElementById('D').value = inp.D;
+                document.getElementById('E').value = inp.E;
+                document.getElementById('Ge').value = inp.Ge ? '1' : '0';
+                document.getElementById('Gt').value = inp.Gt;
+                document.getElementById('Gp').value = inp.Gp;
+                document.getElementById('E_min').value = inp.E_min;
+                document.getElementById('E_max').value = inp.E_max;
+                calculateAndRender();
+                showToast('📂 فیش بازیابی شد.', 'success');
+            }
+
+            // ──────────────────────────────────────
+            //  STATUS & LOCK
+            // ──────────────────────────────────────
+            function updatePayslipStatus() {
+                const statusEl = document.getElementById('payslipStatus');
+                const card = document.getElementById('payslipContent');
+                const watermark = document.getElementById('draftWatermark');
+                if (STATE.isLocked) {
+                    statusEl.textContent = '✅ تأیید شده';
+                    statusEl.style.color = '#27ae60';
+                    card.classList.remove('draft');
+                    if (watermark) watermark.style.display = 'none';
+                    document.getElementById('btnLock').textContent = '🔓 باز کردن';
+                } else {
+                    statusEl.textContent = 'پیش‌نویس';
+                    statusEl.style.color = '#e67e22';
+                    card.classList.add('draft');
+                    if (watermark) watermark.style.display = 'block';
+                    document.getElementById('btnLock').textContent = '🔒 تأیید و قفل';
                 }
+            }
+
+            function confirmAndLock() {
+                STATE.isLocked = !STATE.isLocked;
+                updatePayslipStatus();
+                if (STATE.isLocked) {
+                    showToast('🔒 فیش تأیید و قفل شد.', 'success');
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 80, spread: 60, origin: { y: 0.7, x: 0.5 },
+                            colors: ['#c9a84c', '#d4af37', '#e8d48b'] });
+                    }
+                } else {
+                    showToast('🔓 فیش باز شد و قابل ویرایش است.');
+                }
+            }
+
+            // ──────────────────────────────────────
+            //  SAVE / LOAD PROFILE
+            // ──────────────────────────────────────
+            function saveProfile() {
+                const inputs = readInputs();
+                const profile = {
+                    teacherName: inputs.teacherName,
+                    monthYear: inputs.monthYear,
+                    hoursWorkedRaw: inputs.hoursWorkedRaw,
+                    hoursStandardRaw: inputs.hoursStandardRaw,
+                    isMarried: inputs.isMarried,
+                    childrenCount: inputs.childrenCount,
+                    insuranceType: inputs.insuranceType,
+                    F: inputs.F,
+                    G: inputs.G,
+                    M: inputs.M,
+                    Dp: inputs.Dp,
+                    B: inputs.B,
+                    C: inputs.C,
+                    D: inputs.D,
+                    E: inputs.E,
+                    Ge: inputs.Ge,
+                    Gt: inputs.Gt,
+                    Gp: inputs.Gp,
+                    E_min: inputs.E_min,
+                    E_max: inputs.E_max,
+                };
+                localStorage.setItem('hrms_profile', JSON.stringify(profile));
+                showToast('💾 پروفایل با موفقیت ذخیره شد.', 'success');
+            }
+
+            function loadProfile() {
+                const raw = localStorage.getItem('hrms_profile');
+                if (!raw) { showToast('⚠️ هیچ پروفایلی ذخیره نشده است.', 'error'); return; }
+                try {
+                    const p = JSON.parse(raw);
+                    document.getElementById('teacherName').value = p.teacherName || 'استاد نمونه';
+                    document.getElementById('monthYear').value = p.monthYear || 'فروردین ۱۴۰۵';
+                    document.getElementById('hoursWorked').value = p.hoursWorkedRaw || '160:00';
+                    document.getElementById('hoursStandard').value = p.hoursStandardRaw || '192:00';
+                    document.getElementById('isMarried').value = p.isMarried ? '1' : '0';
+                    document.getElementById('childrenCount').value = p.childrenCount || 0;
+                    document.getElementById('insuranceType').value = p.insuranceType || 'CALCULATED_BASE';
+                    document.getElementById('F').value = p.F || 1500000;
+                    document.getElementById('G').value = p.G || 500000;
+                    document.getElementById('M').value = p.M || 30;
+                    document.getElementById('Dp').value = p.Dp || 200000;
+                    document.getElementById('B').value = p.B || 5000000;
+                    document.getElementById('C').value = p.C || 3000000;
+                    document.getElementById('D').value = p.D || 2000000;
+                    document.getElementById('E').value = p.E || 1500000;
+                    document.getElementById('Ge').value = p.Ge ? '1' : '0';
+                    document.getElementById('Gt').value = p.Gt || 10;
+                    document.getElementById('Gp').value = p.Gp || 500000;
+                    document.getElementById('E_min').value = p.E_min || 60000000;
+                    document.getElementById('E_max').value = p.E_max || 90000000;
+                    calculateAndRender();
+                    showToast('📂 پروفایل با موفقیت بارگذاری شد.', 'success');
+                } catch (e) {
+                    showToast('⚠️ خطا در بارگذاری پروفایل.', 'error');
+                }
+            }
+
+            // ──────────────────────────────────────
+            //  EXPORT CSV
+            // ──────────────────────────────────────
+            function exportCSV() {
+                const inputs = readInputs();
                 const result = runPayrollEngine(inputs);
+                const rows = [
+                    ['شرح', 'مبلغ (ریال)'],
+                    ['حقوق پایه', result.BasePay],
+                    ['سنوات ماهانه', result.MonthlySeveranceBase],
+                    ['مسکن', result.Housing],
+                    ['خواربار', result.Grocery],
+                    ['حق تأهل', result.Marriage],
+                    ['حق اولاد', result.Children],
+                    ['جمع اقلام ثابت', result.K_base],
+                    ['عیدی سالانه', result.annualEidi],
+                    ['عیدی ماهانه', result.monthlyEidi],
+                    ['پاداش تدریس', result.X],
+                    ['سنوات پایان خدمت', result.MonthlySeverancePay],
+                    ['ذخیره مرخصی', result.MonthlyLeavePay],
+                    ['جمع ناخالص', result.GrossTotal],
+                    ['کسر بیمه', result.insuranceDeduction],
+                    ['خالص پرداختی', result.netPayment],
+                ];
+                const csv = rows.map(r => r.join(',')).join('\n');
+                const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `payslip_${inputs.teacherName}_${inputs.monthYear}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('📄 فایل CSV دانلود شد.', 'success');
+            }
+
+            // ──────────────────────────────────────
+            //  PRINT & PREVIEW
+            // ──────────────────────────────────────
+            function previewPrint() {
+                const inputs = readInputs();
+                const result = runPayrollEngine(inputs);
+                const originalCompact = STATE.compactPayslip;
+                STATE.compactPayslip = false;
                 renderPayslip(inputs, result);
-                showToast('✅ فیش حقوقی با موفقیت محاسبه و بروزرسانی شد.');
+                const payslipHTML = document.getElementById('payslipContent').outerHTML;
+                STATE.compactPayslip = originalCompact;
+                renderPayslip(inputs, result);
+
+                document.getElementById('printPreviewContent').innerHTML = payslipHTML;
+                openModal('printPreviewModal');
             }
 
             function printPayslip() {
-                calculateAndRender();
+                const inputs = readInputs();
+                const result = runPayrollEngine(inputs);
+                const originalCompact = STATE.compactPayslip;
+                STATE.compactPayslip = false;
+                renderPayslip(inputs, result);
                 setTimeout(() => {
                     window.print();
+                    STATE.compactPayslip = originalCompact;
+                    renderPayslip(inputs, result);
                 }, 200);
             }
 
+            // ──────────────────────────────────────
+            //  MODAL
+            // ──────────────────────────────────────
+            function openModal(id) {
+                document.getElementById(id).classList.add('active');
+            }
+
+            function closeModal(id) {
+                document.getElementById(id).classList.remove('active');
+            }
+
+            // ──────────────────────────────────────
+            //  SIGNATURE
+            // ──────────────────────────────────────
+            let signaturePad = null;
+
+            function initSignaturePad() {
+                const canvas = document.getElementById('signatureCanvas');
+                if (!canvas || signaturePad) return;
+                canvas.style.display = 'inline-block';
+                document.getElementById('btnClearSig').style.display = 'inline-block';
+                signaturePad = new SignaturePad(canvas, {
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    penColor: 'rgb(30,30,30)',
+                });
+            }
+
+            function clearSignature() {
+                if (signaturePad) signaturePad.clear();
+            }
+
+            // ──────────────────────────────────────
+            //  THEME
+            // ──────────────────────────────────────
+            function toggleTheme() {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('hrms_theme', next);
+                showToast(next === 'light' ? '☀️ تم روشن' : '🌙 تم تاریک');
+            }
+
+            function loadTheme() {
+                const saved = localStorage.getItem('hrms_theme');
+                if (saved) document.documentElement.setAttribute('data-theme', saved);
+            }
+
+            // ──────────────────────────────────────
+            //  COMPACT MODES
+            // ──────────────────────────────────────
+            function toggleCompactMode() {
+                STATE.compactMode = !STATE.compactMode;
+                document.getElementById('inputCardBody').classList.toggle('collapsed', STATE.compactMode);
+                showToast(STATE.compactMode ? '📐 حالت فشرده فرم' : '📋 حالت کامل فرم');
+            }
+
+            function togglePayslipCompact() {
+                STATE.compactPayslip = !STATE.compactPayslip;
+                const inputs = readInputs();
+                const result = runPayrollEngine(inputs);
+                renderPayslip(inputs, result);
+                showToast(STATE.compactPayslip ? '🗂️ فیش فشرده' : '📋 فیش کامل');
+            }
+
+            // ──────────────────────────────────────
+            //  CARD COLLAPSE
+            // ──────────────────────────────────────
+            function toggleCardBody(titleEl) {
+                const cardBody = titleEl.nextElementSibling;
+                const isCollapsed = cardBody.classList.contains('collapsed');
+                if (isCollapsed) {
+                    cardBody.classList.remove('collapsed');
+                    titleEl.classList.remove('collapsed');
+                    titleEl.setAttribute('aria-expanded', 'true');
+                } else {
+                    cardBody.classList.add('collapsed');
+                    titleEl.classList.add('collapsed');
+                    titleEl.setAttribute('aria-expanded', 'false');
+                }
+            }
+
+            // ──────────────────────────────────────
+            //  DRAWER (Mobile)
+            // ──────────────────────────────────────
+            function toggleDrawer() {
+                const drawer = document.getElementById('mobileDrawer');
+                const backdrop = document.getElementById('drawerBackdrop');
+                const isActive = drawer.classList.contains('active');
+                if (isActive) {
+                    drawer.classList.remove('active');
+                    backdrop.classList.remove('active');
+                } else {
+                    // Clone input panel into drawer
+                    const inputPanel = document.getElementById('inputPanel');
+                    drawer.innerHTML = inputPanel.innerHTML;
+                    drawer.classList.add('active');
+                    backdrop.classList.add('active');
+                }
+            }
+
+            function checkMobile() {
+                const toggle = document.getElementById('drawerToggle');
+                if (window.innerWidth <= 700) {
+                    toggle.style.display = 'block';
+                    document.getElementById('inputPanel').style.display = 'none';
+                } else {
+                    toggle.style.display = 'none';
+                    document.getElementById('inputPanel').style.display = '';
+                    // Close drawer if open
+                    document.getElementById('mobileDrawer').classList.remove('active');
+                    document.getElementById('drawerBackdrop').classList.remove('active');
+                }
+            }
+
+            // ──────────────────────────────────────
+            //  UNDO / REDO
+            // ──────────────────────────────────────
+            function pushUndoState() {
+                const inputs = readInputs();
+                const state = {
+                    teacherName: inputs.teacherName,
+                    monthYear: inputs.monthYear,
+                    hoursWorkedRaw: inputs.hoursWorkedRaw,
+                    hoursStandardRaw: inputs.hoursStandardRaw,
+                    isMarried: inputs.isMarried,
+                    childrenCount: inputs.childrenCount,
+                    insuranceType: inputs.insuranceType,
+                    F: inputs.F,
+                    G: inputs.G,
+                    M: inputs.M,
+                    Dp: inputs.Dp,
+                    B: inputs.B,
+                    C: inputs.C,
+                    D: inputs.D,
+                    E: inputs.E,
+                    Ge: inputs.Ge,
+                    Gt: inputs.Gt,
+                    Gp: inputs.Gp,
+                    E_min: inputs.E_min,
+                    E_max: inputs.E_max,
+                };
+                STATE.undoStack.push(state);
+                if (STATE.undoStack.length > STATE.maxUndo) STATE.undoStack.shift();
+                STATE.redoStack = [];
+            }
+
+            function undo() {
+                if (STATE.undoStack.length === 0) return;
+                const current = readInputs();
+                const currentState = {
+                    teacherName: current.teacherName,
+                    monthYear: current.monthYear,
+                    hoursWorkedRaw: current.hoursWorkedRaw,
+                    hoursStandardRaw: current.hoursStandardRaw,
+                    isMarried: current.isMarried,
+                    childrenCount: current.childrenCount,
+                    insuranceType: current.insuranceType,
+                    F: current.F,
+                    G: current.G,
+                    M: current.M,
+                    Dp: current.Dp,
+                    B: current.B,
+                    C: current.C,
+                    D: current.D,
+                    E: current.E,
+                    Ge: current.Ge,
+                    Gt: current.Gt,
+                    Gp: current.Gp,
+                    E_min: current.E_min,
+                    E_max: current.E_max,
+                };
+                STATE.redoStack.push(currentState);
+                const prev = STATE.undoStack.pop();
+                restoreState(prev);
+                calculateAndRender();
+                showToast('↩️ برگشت (Undo)');
+            }
+
+            function redo() {
+                if (STATE.redoStack.length === 0) return;
+                const current = readInputs();
+                const currentState = {
+                    teacherName: current.teacherName,
+                    monthYear: current.monthYear,
+                    hoursWorkedRaw: current.hoursWorkedRaw,
+                    hoursStandardRaw: current.hoursStandardRaw,
+                    isMarried: current.isMarried,
+                    childrenCount: current.childrenCount,
+                    insuranceType: current.insuranceType,
+                    F: current.F,
+                    G: current.G,
+                    M: current.M,
+                    Dp: current.Dp,
+                    B: current.B,
+                    C: current.C,
+                    D: current.D,
+                    E: current.E,
+                    Ge: current.Ge,
+                    Gt: current.Gt,
+                    Gp: current.Gp,
+                    E_min: current.E_min,
+                    E_max: current.E_max,
+                };
+                STATE.undoStack.push(currentState);
+                const next = STATE.redoStack.pop();
+                restoreState(next);
+                calculateAndRender();
+                showToast('⏩ جلو (Redo)');
+            }
+
+            function restoreState(s) {
+                document.getElementById('teacherName').value = s.teacherName;
+                document.getElementById('monthYear').value = s.monthYear;
+                document.getElementById('hoursWorked').value = s.hoursWorkedRaw;
+                document.getElementById('hoursStandard').value = s.hoursStandardRaw;
+                document.getElementById('isMarried').value = s.isMarried ? '1' : '0';
+                document.getElementById('childrenCount').value = s.childrenCount;
+                document.getElementById('insuranceType').value = s.insuranceType;
+                document.getElementById('F').value = s.F;
+                document.getElementById('G').value = s.G;
+                document.getElementById('M').value = s.M;
+                document.getElementById('Dp').value = s.Dp;
+                document.getElementById('B').value = s.B;
+                document.getElementById('C').value = s.C;
+                document.getElementById('D').value = s.D;
+                document.getElementById('E').value = s.E;
+                document.getElementById('Ge').value = s.Ge ? '1' : '0';
+                document.getElementById('Gt').value = s.Gt;
+                document.getElementById('Gp').value = s.Gp;
+                document.getElementById('E_min').value = s.E_min;
+                document.getElementById('E_max').value = s.E_max;
+            }
+
+            // ──────────────────────────────────────
+            //  ONBOARDING
+            // ──────────────────────────────────────
+            const onboardingSteps = [
+                { selector: '#teacherName', text: 'نام استاد را وارد کنید. این نام در فیش چاپ می‌شود.' },
+                { selector: '#hoursWorked', text: 'ساعات کارکرد ماهانه را به فرمت ساعت:دقیقه وارد کنید (مثال: 146:40).' },
+                { selector: '#hoursStandard', text: 'ساعات استاندارد ماهانه (معمولاً 192:00).' },
+                { selector: '#F', text: 'حقوق پایه روزانه به ریال — پارامتر F در فرمول.' },
+                { selector: '.btn-gold', text: 'با کلیک روی این دکمه، فیش حقوقی محاسبه و نمایش داده می‌شود.' },
+                { selector: '#payslipContent', text: 'فیش حقوقی در این بخش نمایش داده می‌شود. می‌توانید آن را پرینت بگیرید.' },
+            ];
+
+            function startOnboarding() {
+                STATE.onboardingStep = 0;
+                STATE.onboardingActive = true;
+                showOnboardingStep();
+            }
+
+            function showOnboardingStep() {
+                if (!STATE.onboardingActive) return;
+                const step = onboardingSteps[STATE.onboardingStep];
+                if (!step) { endOnboarding(); return; }
+                const el = document.querySelector(step.selector);
+                if (!el) { nextOnboardingStep(); return; }
+                // Remove previous highlight
+                document.querySelectorAll('.onboarding-highlight').forEach(e => e.classList.remove(
+                    'onboarding-highlight'));
+                el.classList.add('onboarding-highlight');
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                const tooltip = document.getElementById('onboardingTooltip');
+                document.getElementById('onboardingText').textContent = step.text;
+                const rect = el.getBoundingClientRect();
+                tooltip.style.display = 'block';
+                tooltip.style.top = (rect.bottom + 10) + 'px';
+                tooltip.style.left = Math.min(rect.left, window.innerWidth - 340) + 'px';
+                tooltip.style.right = 'auto';
+
+                document.getElementById('onboardingNextBtn').textContent =
+                    STATE.onboardingStep >= onboardingSteps.length - 1 ? '✅ پایان' : 'بعد ⏩';
+                document.getElementById('onboardingNextBtn').onclick = nextOnboardingStep;
+            }
+
+            function nextOnboardingStep() {
+                STATE.onboardingStep++;
+                showOnboardingStep();
+            }
+
+            function prevOnboardingStep() {
+                STATE.onboardingStep = Math.max(0, STATE.onboardingStep - 1);
+                showOnboardingStep();
+            }
+
+            function endOnboarding() {
+                STATE.onboardingActive = false;
+                document.querySelectorAll('.onboarding-highlight').forEach(e => e.classList.remove(
+                    'onboarding-highlight'));
+                document.getElementById('onboardingTooltip').style.display = 'none';
+                showToast('✅ تور راهنما به پایان رسید.');
+            }
+
+            // ──────────────────────────────────────
+            //  DIRTY STATE & BEFOREUNLOAD
+            // ──────────────────────────────────────
+            function markDirty() {
+                STATE.dirty = true;
+            }
+            window.addEventListener('beforeunload', (e) => {
+                if (STATE.dirty && !STATE.isLocked) {
+                    e.preventDefault();
+                    e.returnValue = 'تغییرات ذخیره نشده‌اند. مطمئن هستید؟';
+                    return e.returnValue;
+                }
+            });
+
+            // ──────────────────────────────────────
+            //  MAIN CALCULATE & RENDER
+            // ──────────────────────────────────────
+            function calculateAndRender() {
+                setProgress(20);
+                const inputs = readInputs();
+                setProgress(40);
+                if (!validateAll(inputs)) {
+                    showToast('⚠️ لطفاً خطاهای فرم را اصلاح کنید.', 'error');
+                    setProgress(0);
+                    return;
+                }
+                if (inputs.Hm <= 0) {
+                    showToast('⚠️ ساعات استاندارد ماهانه باید بزرگتر از صفر باشد.', 'error');
+                    setProgress(0);
+                    return;
+                }
+                setProgress(60);
+                const result = runPayrollEngine(inputs);
+                setProgress(80);
+                renderPayslip(inputs, result);
+                setProgress(100);
+                markDirty();
+            }
+
+            // ──────────────────────────────────────
+            //  RESET
+            // ──────────────────────────────────────
             function resetToDefaults() {
+                pushUndoState();
                 document.getElementById('teacherName').value = 'استاد نمونه';
                 document.getElementById('monthYear').value = 'فروردین ۱۴۰۵';
                 document.getElementById('hoursWorked').value = '160:00';
@@ -1112,10 +2092,15 @@
                 document.getElementById('Gp').value = '500000';
                 document.getElementById('E_min').value = '60000000';
                 document.getElementById('E_max').value = '90000000';
+                STATE.isLocked = false;
+                updatePayslipStatus();
                 calculateAndRender();
                 showToast('↩️ مقادیر به پیش‌فرض بازنشانی شدند.');
             }
 
+            // ──────────────────────────────────────
+            //  LIVE LISTENERS
+            // ──────────────────────────────────────
             function attachLiveListeners() {
                 const inputIds = [
                     'teacherName', 'monthYear', 'hoursWorked', 'hoursStandard',
@@ -1126,13 +2111,18 @@
                 inputIds.forEach(id => {
                     const el = document.getElementById(id);
                     if (!el) return;
-                    el.addEventListener('input', debounce(calculateAndRender, 400));
-                    el.addEventListener('change', debounce(calculateAndRender, 300));
+                    el.addEventListener('input', (e) => {
+                        pushUndoState();
+                        debounce(calculateAndRender, 350)();
+                    });
+                    el.addEventListener('change', (e) => {
+                        pushUndoState();
+                        debounce(calculateAndRender, 300)();
+                    });
                 });
 
-                // اصلاح فرمت ساعت:دقیقه برای هر دو فیلد زمان
-                const timeFields = ['hoursWorked', 'hoursStandard'];
-                timeFields.forEach(fieldId => {
+                // Time field blur formatting
+                ['hoursWorked', 'hoursStandard'].forEach(fieldId => {
                     const el = document.getElementById(fieldId);
                     if (el) {
                         el.addEventListener('blur', () => {
@@ -1142,10 +2132,7 @@
                                 if (parts.length === 2) {
                                     const h = parseInt(parts[0], 10) || 0;
                                     const m = parseInt(parts[1], 10) || 0;
-                                    const formatted = `${h}:${String(m).padStart(2, '0')}`;
-                                    if (val !== formatted) {
-                                        el.value = formatted;
-                                    }
+                                    el.value = `${h}:${String(m).padStart(2, '0')}`;
                                 }
                             }
                             calculateAndRender();
@@ -1162,15 +2149,79 @@
                 };
             }
 
+            // ──────────────────────────────────────
+            //  KEYBOARD SHORTCUTS
+            // ──────────────────────────────────────
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 's') { e.preventDefault();
+                    saveProfile(); }
+                if (e.ctrlKey && e.key === 'p') { e.preventDefault();
+                    printPayslip(); }
+                if (e.ctrlKey && e.key === 'z') { e.preventDefault();
+                    undo(); }
+                if (e.ctrlKey && e.key === 'y') { e.preventDefault();
+                    redo(); }
+                if (e.key === 'Escape') {
+                    endOnboarding();
+                    closeModal('printPreviewModal');
+                }
+            });
+
+            // ──────────────────────────────────────
+            //  INIT
+            // ──────────────────────────────────────
             function init() {
+                loadTheme();
                 attachLiveListeners();
                 calculateAndRender();
+                updatePayslipStatus();
+                renderHistory();
+                initSignaturePad();
+                checkMobile();
+                window.addEventListener('resize', checkMobile);
+
+                // Auto-save on idle
+                let idleTimer;
+                document.addEventListener('mousemove', () => {
+                    clearTimeout(idleTimer);
+                    idleTimer = setTimeout(() => {
+                        if (STATE.dirty) saveProfile();
+                    }, 600000); // 10 min
+                });
+
+                console.log('🏦 HRMS Payroll Engine v2.0 Initialized');
+                console.log('   Features: Chart.js | Confetti | Signature Pad | Undo/Redo | Onboarding');
+                console.log('   Theme support | PWA-ready | CSV export | History | Keyboard shortcuts');
             }
 
+            // ──────────────────────────────────────
+            //  EXPOSE TO GLOBAL
+            // ──────────────────────────────────────
             window.calculateAndRender = calculateAndRender;
             window.printPayslip = printPayslip;
+            window.previewPrint = previewPrint;
             window.resetToDefaults = resetToDefaults;
+            window.saveProfile = saveProfile;
+            window.loadProfile = loadProfile;
+            window.exportCSV = exportCSV;
+            window.toggleTheme = toggleTheme;
+            window.toggleCompactMode = toggleCompactMode;
+            window.togglePayslipCompact = togglePayslipCompact;
+            window.toggleCardBody = toggleCardBody;
+            window.toggleDrawer = toggleDrawer;
+            window.confirmAndLock = confirmAndLock;
+            window.clearSignature = clearSignature;
+            window.undo = undo;
+            window.redo = redo;
+            window.startOnboarding = startOnboarding;
+            window.nextOnboardingStep = nextOnboardingStep;
+            window.prevOnboardingStep = prevOnboardingStep;
+            window.endOnboarding = endOnboarding;
+            window.restoreHistory = restoreHistory;
+            window.closeModal = closeModal;
+            window.openModal = openModal;
 
+            // Run
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', init);
             } else {
