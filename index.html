@@ -48,7 +48,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Header */
         .app-header {
             text-align: center;
             padding: 28px 20px 10px;
@@ -85,7 +84,6 @@
             margin-top: 2px;
         }
 
-        /* Main Layout */
         .main-container {
             max-width: 1350px;
             margin: 0 auto;
@@ -103,7 +101,6 @@
             }
         }
 
-        /* Glass Card */
         .glass-card {
             background: var(--bg-card);
             backdrop-filter: blur(20px);
@@ -134,7 +131,6 @@
             font-size: 1.3rem;
         }
 
-        /* Form Groups */
         .form-section {
             margin-bottom: 16px;
         }
@@ -215,7 +211,6 @@
             margin-top: 1px;
         }
 
-        /* Toggle Switch */
         .toggle-row {
             display: flex;
             align-items: center;
@@ -270,7 +265,6 @@
             background: var(--gold-light);
         }
 
-        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -313,7 +307,6 @@
             margin-top: 14px;
         }
 
-        /* Payslip Card */
         .payslip-card {
             background: #fffef9;
             backdrop-filter: none;
@@ -455,7 +448,6 @@
             margin: 18px auto 4px;
         }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -477,7 +469,6 @@
             opacity: 1;
         }
 
-        /* Print Styles */
         @media print {
             body {
                 background: #fff !important;
@@ -534,7 +525,6 @@
             }
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
@@ -546,7 +536,6 @@
             border-radius: 10px;
         }
 
-        /* Highlight animation */
         @keyframes subtlePulse {
             0%,
             100% {
@@ -563,7 +552,6 @@
 </head>
 <body>
 
-    <!-- Header -->
     <header class="app-header">
         <div class="logo-area">
             <span class="logo-icon">⚜️</span>
@@ -574,14 +562,12 @@
         </div>
     </header>
 
-    <!-- Main -->
     <div class="main-container">
 
         <!-- Input Panel -->
         <div class="glass-card" id="inputPanel">
             <div class="card-title"><span class="icon">📋</span> اطلاعات ورودی استاد</div>
 
-            <!-- Teacher Info -->
             <div class="form-section">
                 <div class="section-label">👤 مشخصات استاد</div>
                 <div class="form-row">
@@ -601,9 +587,9 @@
                         <span class="unit-hint">ورودی به فرمت ساعت:دقیقه — مثال: ۱۴۶:۴۰</span>
                     </div>
                     <div class="form-group">
-                        <label>ساعات استاندارد ماهانه (Hm)</label>
-                        <input type="number" id="hoursStandard" value="192" step="1" min="1">
-                        <span class="unit-hint">معمولاً ۱۹۲ ساعت</span>
+                        <label>ساعات استاندارد ماهانه (HH:mm)</label>
+                        <input type="text" id="hoursStandard" class="time-input" value="192:00" placeholder="مثال: 192:00">
+                        <span class="unit-hint">به فرمت ساعت:دقیقه — معمولاً ۱۹۲:۰۰</span>
                     </div>
                 </div>
                 <div class="form-row col-3">
@@ -630,7 +616,6 @@
                 </div>
             </div>
 
-            <!-- Salary Base Settings -->
             <div class="form-section">
                 <div class="section-label">💰 تنظیمات پایه حقوق (ریال)</div>
                 <div class="form-row col-3">
@@ -670,15 +655,9 @@
                         <label>حق اولاد هر فرزند (E)</label>
                         <input type="number" id="E" value="1500000" step="10000" min="0">
                     </div>
-                    <div class="form-group">
-                        <label>مبلغ هدف توافقی (اختیاری)</label>
-                        <input type="number" id="targetAmount" value="" step="10000" min="0" placeholder="خالی = محاسبه خودکار">
-                        <span class="unit-hint">در صورت خالی بودن، از فرمول محاسبه می‌شود</span>
-                    </div>
                 </div>
             </div>
 
-            <!-- Grade Settings -->
             <div class="form-section">
                 <div class="section-label">🎓 تنظیمات پایه / رتبه (Grade)</div>
                 <div class="form-row col-3">
@@ -701,619 +680,503 @@
                 </div>
             </div>
 
-            <!-- Eidi Settings -->
             <div class="form-section">
                 <div class="section-label">🎁 تنظیمات عیدی سالانه (ریال)</div>
                 <div class="form-row">
                     <div class="form-group">
-                <label>حداقل عیدی سالانه (E_min)</label>
-                <input type="number" id="E_min" value="60000000" step="100000" min="0">
-            </div>
-            <div class="form-group">
-                <label>حداکثر عیدی سالانه (E_max)</label>
-                <input type="number" id="E_max" value="90000000" step="100000" min="0">
-            </div>
-        </div>
-    </div>
-
-    <!-- Actions -->
-    <div class="btn-row">
-        <button class="btn btn-gold" onclick="calculateAndRender()" title="محاسبه و نمایش فیش حقوقی">
-            🔄 محاسبه و بروزرسانی فیش
-        </button>
-        <button class="btn btn-outline" onclick="printPayslip()" title="نسخه قابل پرینت فیش">
-            🖨️ پرینت فیش (A5)
-        </button>
-        <button class="btn btn-outline" onclick="resetToDefaults()" title="بازنشانی به مقادیر پیش‌فرض">
-            ↩️ بازنشانی
-        </button>
-    </div>
-</div>
-
-<!-- Payslip Panel -->
-<div class="glass-card payslip-card-outer" id="payslipPanel">
-    <div class="card-title"><span class="icon">📄</span> فیش حقوقی صادرشده</div>
-    <div class="payslip-card" id="payslipContent">
-        <div class="watermark">PAYSLIP</div>
-        <!-- Payslip rendered dynamically -->
-        <div id="payslipInner" style="position:relative;z-index:1;">
-            <div class="payslip-header">
-                <div class="company-info">
-                    <h3>📜 فیش حقوقی</h3>
-                    <div class="sub">سیستم مدیریت حقوق و دستمزد HRMS</div>
+                        <label>حداقل عیدی سالانه (E_min)</label>
+                        <input type="number" id="E_min" value="60000000" step="100000" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label>حداکثر عیدی سالانه (E_max)</label>
+                        <input type="number" id="E_max" value="90000000" step="100000" min="0">
+                    </div>
                 </div>
-                <div class="slip-meta" id="slipMeta"></div>
             </div>
-            <table class="payslip-table" id="payslipTable">
-                <tbody id="payslipTbody"></tbody>
-            </table>
-            <div class="payslip-footer" id="payslipFooter"></div>
+
+            <div class="btn-row">
+                <button class="btn btn-gold" onclick="calculateAndRender()" title="محاسبه و نمایش فیش حقوقی">
+                    🔄 محاسبه و بروزرسانی فیش
+                </button>
+                <button class="btn btn-outline" onclick="printPayslip()" title="نسخه قابل پرینت فیش">
+                    🖨️ پرینت فیش (A5)
+                </button>
+                <button class="btn btn-outline" onclick="resetToDefaults()" title="بازنشانی به مقادیر پیش‌فرض">
+                    ↩️ بازنشانی
+                </button>
+            </div>
+        </div>
+
+        <!-- Payslip Panel -->
+        <div class="glass-card payslip-card-outer" id="payslipPanel">
+            <div class="card-title"><span class="icon">📄</span> فیش حقوقی صادرشده</div>
+            <div class="payslip-card" id="payslipContent">
+                <div class="watermark">PAYSLIP</div>
+                <div id="payslipInner" style="position:relative;z-index:1;">
+                    <div class="payslip-header">
+                        <div class="company-info">
+                            <h3>📜 فیش حقوقی</h3>
+                            <div class="sub">سیستم مدیریت حقوق و دستمزد HRMS</div>
+                        </div>
+                        <div class="slip-meta" id="slipMeta"></div>
+                    </div>
+                    <table class="payslip-table" id="payslipTable">
+                        <tbody id="payslipTbody"></tbody>
+                    </table>
+                    <div class="payslip-footer" id="payslipFooter"></div>
+                </div>
+            </div>
         </div>
     </div>
-</div>
-</div>
 
-<!-- Toast -->
-<div class="toast" id="toast"></div>
+    <div class="toast" id="toast"></div>
 
-<script>
-    (function() {
-        // ──────────────────────────────────────
-        //  UTILITY FUNCTIONS
-        // ──────────────────────────────────────
-
-        /** Parse HH:mm to decimal hours with truncation to 2 decimal places (no rounding) */
-        function parseTimeToHours(timeStr) {
-            const trimmed = timeStr.trim();
-            const parts = trimmed.split(':');
-            if (parts.length !== 2) {
-                // fallback: treat as plain number
-                const num = parseFloat(trimmed);
-                if (isNaN(num) || num < 0) return 0;
-                return truncate2(num);
-            }
-            const hours = parseInt(parts[0], 10) || 0;
-            const minutes = parseInt(parts[1], 10) || 0;
-            const total = hours + (minutes / 60);
-            return truncate2(total);
-        }
-
-        /** Truncate to 2 decimal places (no rounding) — e.g. 146.6666 → 146.66 */
-        function truncate2(value) {
-            return Math.floor(value * 100) / 100;
-        }
-
-        /** Truncate to integer (Rial) */
-        function toRial(value) {
-            return Math.floor(value);
-        }
-
-        /** Format number with commas for Rial display */
-        function formatRial(num) {
-            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
-        /** Show toast */
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            clearTimeout(toast._timeout);
-            toast._timeout = setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
-        // ──────────────────────────────────────
-        //  READ INPUTS
-        // ──────────────────────────────────────
-        function readInputs() {
-            const teacherName = document.getElementById('teacherName').value.trim() || 'استاد';
-            const monthYear = document.getElementById('monthYear').value.trim() || '---';
-            const hoursWorkedRaw = document.getElementById('hoursWorked').value.trim() || '0:00';
-            const H = parseTimeToHours(hoursWorkedRaw);
-            const Hm = parseFloat(document.getElementById('hoursStandard').value) || 192;
-            const isMarried = document.getElementById('isMarried').value === '1';
-            const childrenCount = parseInt(document.getElementById('childrenCount').value) || 0;
-            const insuranceType = document.getElementById('insuranceType').value;
-
-            const F = parseFloat(document.getElementById('F').value) || 0;
-            const G = parseFloat(document.getElementById('G').value) || 0;
-            const M = parseFloat(document.getElementById('M').value) || 30;
-            const Dp = parseFloat(document.getElementById('Dp').value) || 0;
-            const B = parseFloat(document.getElementById('B').value) || 0;
-            const C = parseFloat(document.getElementById('C').value) || 0;
-            const D_val = parseFloat(document.getElementById('D').value) || 0;
-            const E_val = parseFloat(document.getElementById('E').value) || 0;
-            const Ge = document.getElementById('Ge').value === '1';
-            const Gt = parseFloat(document.getElementById('Gt').value) || 0;
-            const Gp = parseFloat(document.getElementById('Gp').value) || 0;
-            const E_min = parseFloat(document.getElementById('E_min').value) || 60000000;
-            const E_max = parseFloat(document.getElementById('E_max').value) || 90000000;
-            const targetRaw = document.getElementById('targetAmount').value.trim();
-            const targetAmountManual = targetRaw !== '' ? parseFloat(targetRaw) : null;
-
-            return {
-                teacherName,
-                monthYear,
-                H,
-                Hm,
-                isMarried,
-                childrenCount,
-                insuranceType,
-                F,
-                G,
-                M,
-                Dp,
-                B,
-                C,
-                D: D_val,
-                E: E_val,
-                Ge,
-                Gt,
-                Gp,
-                E_min,
-                E_max,
-                targetAmountManual,
-            };
-        }
-
-        // ──────────────────────────────────────
-        //  CORE PAYROLL ENGINE
-        // ──────────────────────────────────────
-        function runPayrollEngine(inputs) {
-            const {
-                H,
-                Hm,
-                isMarried,
-                childrenCount,
-                insuranceType,
-                F,
-                G,
-                M,
-                Dp,
-                B,
-                C,
-                D,
-                E,
-                Ge,
-                Gt,
-                Gp,
-                E_min,
-                E_max,
-                targetAmountManual,
-            } = inputs;
-
-            // Step 1: Work coefficient P (truncated to 2 decimals)
-            const P = Hm > 0 ? truncate2(H / Hm) : 0;
-
-            // Grade Bonus (monthly, not affected by P)
-            const GradeBonus = Ge ? (Gt * Gp) : 0;
-
-            // K_base: Fixed items (not dependent on X)
-            const BasePay = (F * M) * P;
-            const MonthlySeveranceBase = (G * M) * P;
-            const Housing = B * P;
-            const Grocery = C * P;
-            const Marriage = isMarried ? (D * P) : 0;
-            const Children = (E * childrenCount) * P;
-            const K_base = BasePay + MonthlySeveranceBase + Housing + Grocery + Marriage + Children + GradeBonus;
-
-            // R_fixed: fixed portion of daily rate (without teaching bonus X)
-            const R_fixed = F + G + (GradeBonus / M);
-
-            // Compute TargetAmount
-            let TargetAmount;
-            const formulaTarget = (H * Dp) + (G * M * P) + GradeBonus;
-            if (targetAmountManual !== null && targetAmountManual > 0) {
-                TargetAmount = targetAmountManual;
-            } else {
-                TargetAmount = formulaTarget;
-            }
-
-            // ── Eidi 3-Hypothesis Solver ──
-            // We need to find X (teaching bonus) such that GrossTotal ≈ TargetAmount.
-            // GrossTotal = K_base + X + MonthlyEidi + MonthlySeverancePay + MonthlyLeavePay
-            // where MonthlySeverancePay = R_daily * (M/12) * P
-            //       MonthlyLeavePay     = R_daily * (26/12) * P
-            //       R_daily = F + G + (GradeBonus/M) + (X/(M*P))  [if P>0]
-            //
-            // For hypotheses 1 & 2, MonthlyEidi is fixed (E_min/12 or E_max/12 times P).
-            // For hypothesis 3, annual Eidi floats and we use the doc formula.
-
-            const severanceFactor = M / 12; // e.g., 30/12 = 2.5
-            const leaveFactor = 26 / 12; // ≈ 2.1667
-            const combinedFactor = severanceFactor + leaveFactor; // (M+26)/12
-
-            let X_final = 0;
-            let hypothesisUsed = 0; // 1, 2, or 3
-            let annualEidi_final = 0;
-            let monthlyEidi_final = 0;
-
-            // Helper: compute GrossTotal given X and annualEidi
-            function computeGrossTotal(X_val, annEidi) {
-                const monEidi = (annEidi / 12) * P;
-                const R_daily = (P > 0) ?
-                    F + G + (GradeBonus / M) + (X_val / (M * P)) :
-                    F + G + (GradeBonus / M);
-                const severancePay = R_daily * severanceFactor * P;
-                const leavePay = R_daily * leaveFactor * P;
-                return K_base + X_val + monEidi + severancePay + leavePay;
-            }
-
-            // Helper: compute actual annual Eidi from X (criterion salary based)
-            function computeActualAnnualEidi(X_val) {
-                const R_daily = (P > 0) ?
-                    F + G + (GradeBonus / M) + (X_val / (M * P)) :
-                    F + G + (GradeBonus / M);
-                // Criterion monthly salary = R_daily * M
-                const criterionMonthly = R_daily * M;
-                // Annual Eidi is typically 2 months of criterion salary, capped
-                const rawAnnual = criterionMonthly * 2;
-                return Math.max(E_min, Math.min(E_max, rawAnnual));
-            }
-
-            if (P <= 0) {
-                // No hours worked
-                X_final = 0;
-                hypothesisUsed = 0;
-                annualEidi_final = E_min;
-                monthlyEidi_final = 0;
-            } else {
-                // --- Hypothesis 1: Eidi at floor ---
-                const annEidi_h1 = E_min;
-                // GrossTotal = K_base + X + (E_min/12)*P + (R_daily)*combinedFactor*P
-                // Solve for X algebraically:
-                // Let R_daily = A + X/(M*P)  where A = F + G + GradeBonus/M
-                // GrossTotal = K_base + X + monEidi_h1 + (A + X/(M*P)) * combinedFactor * P
-                //             = K_base + X + monEidi_h1 + A*combinedFactor*P + X*combinedFactor/M
-                //             = K_base + monEidi_h1 + A*combinedFactor*P + X*(1 + combinedFactor/M)
-                // => X = (TargetAmount - K_base - monEidi_h1 - A*combinedFactor*P) / (1 + combinedFactor/M)
-                const A = F + G + (GradeBonus / M);
-                const monEidi_h1 = (annEidi_h1 / 12) * P;
-                const denom = 1 + (combinedFactor / M);
-                let X_h1 = (TargetAmount - K_base - monEidi_h1 - A * combinedFactor * P) / denom;
-                if (X_h1 < 0) X_h1 = 0;
-                // Verify: actual annual Eidi from this X should be ≤ E_min (meaning floor applies)
-                const actualEidi_h1 = computeActualAnnualEidi(X_h1);
-                const h1_valid = actualEidi_h1 <= E_min + 1; // tolerance of 1 Rial
-
-                // --- Hypothesis 2: Eidi at ceiling ---
-                const annEidi_h2 = E_max;
-                const monEidi_h2 = (annEidi_h2 / 12) * P;
-                let X_h2 = (TargetAmount - K_base - monEidi_h2 - A * combinedFactor * P) / denom;
-                if (X_h2 < 0) X_h2 = 0;
-                const actualEidi_h2 = computeActualAnnualEidi(X_h2);
-                const h2_valid = actualEidi_h2 >= E_max - 1;
-
-                // --- Hypothesis 3: Floating Eidi (doc formula) ---
-                // X = (TargetAmount - K_base - AccFixed - 5*R_fixed*P) / (476/360)
-                // where AccFixed is approximated by R_fixed * P * combinedFactor (≈ R_fixed*P*5 for M=30)
-                const AccFixed = R_fixed * P * combinedFactor;
-                const denom_h3 = 476 / 360;
-                let X_h3 = (TargetAmount - K_base - AccFixed - (5 * R_fixed * P)) / denom_h3;
-                if (X_h3 < 0) X_h3 = 0;
-                const actualEidi_h3 = computeActualAnnualEidi(X_h3);
-                const h3_valid = (actualEidi_h3 > E_min + 1) && (actualEidi_h3 < E_max - 1);
-
-                // Select hypothesis
-                if (h1_valid && X_h1 >= 0) {
-                    X_final = X_h1;
-                    hypothesisUsed = 1;
-                    annualEidi_final = E_min;
-                } else if (h2_valid && X_h2 >= 0) {
-                    X_final = X_h2;
-                    hypothesisUsed = 2;
-                    annualEidi_final = E_max;
-                } else if (h3_valid && X_h3 >= 0) {
-                    X_final = X_h3;
-                    hypothesisUsed = 3;
-                    annualEidi_final = actualEidi_h3;
-                } else {
-                    // Fallback: use hypothesis 3 anyway, with computed Eidi
-                    X_final = Math.max(0, X_h3);
-                    hypothesisUsed = 3;
-                    annualEidi_final = computeActualAnnualEidi(X_final);
+    <script>
+        (function() {
+            function parseTimeToHours(timeStr) {
+                const trimmed = timeStr.trim();
+                const parts = trimmed.split(':');
+                if (parts.length !== 2) {
+                    const num = parseFloat(trimmed);
+                    if (isNaN(num) || num < 0) return 0;
+                    return truncate2(num);
                 }
-                monthlyEidi_final = (annualEidi_final / 12) * P;
+                const hours = parseInt(parts[0], 10) || 0;
+                const minutes = parseInt(parts[1], 10) || 0;
+                const total = hours + (minutes / 60);
+                return truncate2(total);
             }
 
-            // Final R_daily
-            const R_daily = (P > 0) ?
-                F + G + (GradeBonus / M) + (X_final / (M * P)) :
-                F + G + (GradeBonus / M);
-
-            // Final payslip items
-            const MonthlySeverancePay = R_daily * severanceFactor * P;
-            const MonthlyLeavePay = R_daily * leaveFactor * P;
-
-            // Gross Total
-            const GrossTotal = K_base + X_final + monthlyEidi_final + MonthlySeverancePay + MonthlyLeavePay;
-
-            // ── Insurance Deduction ──
-            let insuranceBase = 0;
-            switch (insuranceType) {
-                case 'NONE':
-                    insuranceBase = 0;
-                    break;
-                case 'FULL_BASE':
-                    insuranceBase = (F * M) + B + C; // no P factor
-                    break;
-                case 'CALCULATED_BASE':
-                    insuranceBase = ((F * M) + (G * M) + B + C) * P + GradeBonus;
-                    break;
-                case 'LEGAL':
-                    insuranceBase = GrossTotal - (Marriage + Children);
-                    break;
-                default:
-                    insuranceBase = 0;
+            function truncate2(value) {
+                return Math.floor(value * 100) / 100;
             }
-            const insuranceDeduction = insuranceBase * 0.07;
-            const netPayment = GrossTotal - insuranceDeduction;
 
-            // Truncate all monetary values to integers (Rial)
-            const result = {
-                // Inputs
-                H,
-                Hm,
-                P,
-                GradeBonus,
-                // K_base items
-                BasePay: toRial(BasePay),
-                MonthlySeveranceBase: toRial(MonthlySeveranceBase),
-                Housing: toRial(Housing),
-                Grocery: toRial(Grocery),
-                Marriage: toRial(Marriage),
-                Children: toRial(Children),
-                K_base: toRial(K_base),
-                // X-dependent
-                X: toRial(X_final),
-                R_daily,
-                MonthlySeverancePay: toRial(MonthlySeverancePay),
-                MonthlyLeavePay: toRial(MonthlyLeavePay),
-                // Eidi
-                annualEidi: toRial(annualEidi_final),
-                monthlyEidi: toRial(monthlyEidi_final),
-                hypothesisUsed,
-                // Totals
-                GrossTotal: toRial(GrossTotal),
-                insuranceBase: toRial(insuranceBase),
-                insuranceDeduction: toRial(insuranceDeduction),
-                netPayment: toRial(netPayment),
-                // Meta
-                TargetAmount: toRial(TargetAmount),
-                formulaTarget: toRial(formulaTarget),
-                targetAmountManual,
-            };
-
-            return result;
-        }
-
-        // ──────────────────────────────────────
-        //  RENDER PAYSLIP
-        // ──────────────────────────────────────
-        function renderPayslip(inputs, result) {
-            const {
-                teacherName,
-                monthYear,
-                isMarried,
-                childrenCount,
-                insuranceType,
-            } = inputs;
-
-            // Slip meta
-            document.getElementById('slipMeta').innerHTML = `
-                <div><strong>نام استاد:</strong> ${escapeHtml(teacherName)}</div>
-                <div><strong>دوره:</strong> ${escapeHtml(monthYear)}</div>
-                <div><strong>ساعت کارکرد:</strong> ${result.H.toFixed(2)} از ${result.Hm} (ضریب P: ${result.P.toFixed(2)})</div>
-                <div><strong>تأهل:</strong> ${isMarried ? 'متأهل' : 'مجرد'} | <strong>فرزندان:</strong> ${childrenCount}</div>
-            `;
-
-            // Build table
-            const rows = [];
-
-            // Section: اقلام ثابت
-            rows.push({ label: '📌 اقلام ثابت فیش', cls: 'section-label-row', amount: null });
-            rows.push({ label: 'حقوق پایه (BasePay)', amount: result.BasePay,
-            desc: `(F×M)×P = (${formatRial(toRial(inputs.F))}×${inputs.M})×${result.P.toFixed(2)}` });
-            rows.push({ label: 'سنوات ماهانه (MonthlySeverance)', amount: result.MonthlySeveranceBase,
-            desc: `(G×M)×P` });
-            rows.push({ label: 'مسکن (Housing)', amount: result.Housing, desc: `B×P` });
-            rows.push({ label: 'خواربار (Grocery)', amount: result.Grocery, desc: `C×P` });
-            if (isMarried) rows.push({ label: 'حق تأهل (Marriage)', amount: result.Marriage, desc: `D×P` });
-            if (childrenCount > 0) rows.push({ label: `حق اولاد (${childrenCount} فرزند)`,
-                amount: result.Children, desc: `E×${childrenCount}×P` });
-            if (result.GradeBonus > 0) rows.push({ label: 'پاداش پایه/رتبه (GradeBonus)',
-            amount: result.GradeBonus, desc: 'Gt×Gp — غیروابسته به P' });
-            rows.push({ label: 'جمع اقلام ثابت (K_base)', amount: result.K_base, cls: 'subtotal' });
-
-            // Section: عیدی
-            rows.push({ label: '🎁 عیدی', cls: 'section-label-row', amount: null });
-            rows.push({ label: `عیدی سالانه (فرضیه ${result.hypothesisUsed})`, amount: result.annualEidi,
-                desc: result.hypothesisUsed === 1 ? 'کف (E_min)' : result.hypothesisUsed === 2 ? 'سقف (E_max)' :
-                'شناور' });
-            rows.push({ label: 'عیدی ماهانه (MonthlyEidi)', amount: result.monthlyEidi,
-            desc: `(AnnualEidi/12)×P` });
-
-            // Section: پاداش تدریس
-            rows.push({ label: '🎯 پاداش تدریس', cls: 'section-label-row', amount: null });
-            rows.push({ label: 'پاداش تدریس (X)', amount: result.X,
-                desc: 'متغیر حل‌شده برای رسیدن به مبلغ هدف' });
-            rows.push({ label: 'حقوق معیار روزانه (R_daily)', amount: toRial(result.R_daily),
-            desc: 'F+G+(GradeBonus/M)+(X/(M×P))', isInfo: true });
-
-            // Section: سنوات و مرخصی
-            rows.push({ label: '📅 سنوات و مرخصی', cls: 'section-label-row', amount: null });
-            rows.push({ label: 'سنوات پایان خدمت ماهانه', amount: result.MonthlySeverancePay,
-            desc: `R_daily×(${inputs.M}/12)×P` });
-            rows.push({ label: 'ذخیره مرخصی ماهانه', amount: result.MonthlyLeavePay, desc: 'R_daily×(26/12)×P' });
-
-            // Totals
-            rows.push({ label: '💰 جمع ناخالص (GrossTotal)', amount: result.GrossTotal, cls: 'subtotal' });
-            rows.push({ label: `🛡️ کسر بیمه (۷٪) — نوع: ${insuranceType}`, amount: result.insuranceDeduction,
-                cls: 'deduction', desc: `مبنا: ${formatRial(result.insuranceBase)} ریال` });
-            rows.push({ label: '✅ خالص پرداختی (Net)', amount: result.netPayment, cls: 'net' });
-
-            // Render table
-            const tbody = document.getElementById('payslipTbody');
-            tbody.innerHTML = rows.map(r => {
-                const cls = r.cls || '';
-                const amountCell = r.amount !== null && r.amount !== undefined ?
-                    `<td class="amount ${r.isInfo ? 'info' : ''}">${formatRial(r.amount)} ریال</td>` :
-                    `<td></td>`;
-                const descCell = r.desc ? `<span style="font-size:0.6rem;color:#999;display:block;">${r.desc}</span>` :
-                    '';
-                return `<tr class="${cls}">
-                    <td>${r.label}${descCell}</td>
-                    ${amountCell}
-                </tr>`;
-            }).join('');
-
-            // Footer
-            document.getElementById('payslipFooter').innerHTML = `
-                <div>
-                    <div>📌 مبلغ هدف: <strong>${formatRial(result.TargetAmount)} ریال</strong>
-                    ${result.targetAmountManual !== null ? '(دستی)' : '(فرمول)'}</div>
-                    <div>📌 مبلغ هدف فرمول: ${formatRial(result.formulaTarget)} ریال</div>
-                    <div style="margin-top:4px;">⏱️ ضریب کارکرد P: <strong>${result.P.toFixed(2)}</strong> | فرضیه عیدی: <strong>${result.hypothesisUsed}</strong></div>
-                </div>
-                <div class="signature-area">
-                    <div class="signature-line"></div>
-                    <div>مهر و امضا</div>
-                </div>
-            `;
-        }
-
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        // ──────────────────────────────────────
-        //  MAIN CALCULATE & RENDER
-        // ──────────────────────────────────────
-        function calculateAndRender() {
-            const inputs = readInputs();
-            if (inputs.Hm <= 0) {
-                showToast('⚠️ ساعات استاندارد ماهانه (Hm) باید بزرگتر از صفر باشد.');
-                return;
+            function toRial(value) {
+                return Math.floor(value);
             }
-            const result = runPayrollEngine(inputs);
-            renderPayslip(inputs, result);
-            showToast('✅ فیش حقوقی با موفقیت محاسبه و بروزرسانی شد.');
-        }
 
-        // ──────────────────────────────────────
-        //  PRINT
-        // ──────────────────────────────────────
-        function printPayslip() {
-            // Ensure latest calculation
-            calculateAndRender();
-            setTimeout(() => {
-                window.print();
-            }, 200);
-        }
+            function formatRial(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
 
-        // ──────────────────────────────────────
-        //  RESET DEFAULTS
-        // ──────────────────────────────────────
-        function resetToDefaults() {
-            document.getElementById('teacherName').value = 'استاد نمونه';
-            document.getElementById('monthYear').value = 'فروردین ۱۴۰۵';
-            document.getElementById('hoursWorked').value = '160:00';
-            document.getElementById('hoursStandard').value = '192';
-            document.getElementById('isMarried').value = '0';
-            document.getElementById('childrenCount').value = '0';
-            document.getElementById('insuranceType').value = 'CALCULATED_BASE';
-            document.getElementById('F').value = '1500000';
-            document.getElementById('G').value = '500000';
-            document.getElementById('M').value = '30';
-            document.getElementById('Dp').value = '200000';
-            document.getElementById('B').value = '5000000';
-            document.getElementById('C').value = '3000000';
-            document.getElementById('D').value = '2000000';
-            document.getElementById('E').value = '1500000';
-            document.getElementById('Ge').value = '0';
-            document.getElementById('Gt').value = '10';
-            document.getElementById('Gp').value = '500000';
-            document.getElementById('E_min').value = '60000000';
-            document.getElementById('E_max').value = '90000000';
-            document.getElementById('targetAmount').value = '';
-            calculateAndRender();
-            showToast('↩️ مقادیر به پیش‌فرض بازنشانی شدند.');
-        }
+            function showToast(msg) {
+                const toast = document.getElementById('toast');
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(() => toast.classList.remove('show'), 2500);
+            }
 
-        // ──────────────────────────────────────
-        //  LIVE CALCULATION ON INPUT CHANGE
-        // ──────────────────────────────────────
-        function attachLiveListeners() {
-            const inputIds = [
-                'teacherName', 'monthYear', 'hoursWorked', 'hoursStandard',
-                'isMarried', 'childrenCount', 'insuranceType',
-                'F', 'G', 'M', 'Dp', 'B', 'C', 'D', 'E',
-                'Ge', 'Gt', 'Gp', 'E_min', 'E_max', 'targetAmount',
-            ];
-            inputIds.forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                el.addEventListener('input', debounce(calculateAndRender, 400));
-                el.addEventListener('change', debounce(calculateAndRender, 300));
-            });
-            // Also handle the time input specifically
-            const timeEl = document.getElementById('hoursWorked');
-            if (timeEl) {
-                timeEl.addEventListener('blur', () => {
-                    const val = timeEl.value.trim();
-                    if (val && val.includes(':')) {
-                        const parts = val.split(':');
-                        if (parts.length === 2) {
-                            const h = parseInt(parts[0], 10) || 0;
-                            const m = parseInt(parts[1], 10) || 0;
-                            const formatted = `${h}:${String(m).padStart(2, '0')}`;
-                            if (val !== formatted) {
-                                timeEl.value = formatted;
-                            }
-                        }
+            function readInputs() {
+                const teacherName = document.getElementById('teacherName').value.trim() || 'استاد';
+                const monthYear = document.getElementById('monthYear').value.trim() || '---';
+                const hoursWorkedRaw = document.getElementById('hoursWorked').value.trim() || '0:00';
+                const hoursStandardRaw = document.getElementById('hoursStandard').value.trim() || '192:00';
+                const H = parseTimeToHours(hoursWorkedRaw);
+                const Hm = parseTimeToHours(hoursStandardRaw);
+                const isMarried = document.getElementById('isMarried').value === '1';
+                const childrenCount = parseInt(document.getElementById('childrenCount').value) || 0;
+                const insuranceType = document.getElementById('insuranceType').value;
+
+                const F = parseFloat(document.getElementById('F').value) || 0;
+                const G = parseFloat(document.getElementById('G').value) || 0;
+                const M = parseFloat(document.getElementById('M').value) || 30;
+                const Dp = parseFloat(document.getElementById('Dp').value) || 0;
+                const B = parseFloat(document.getElementById('B').value) || 0;
+                const C = parseFloat(document.getElementById('C').value) || 0;
+                const D_val = parseFloat(document.getElementById('D').value) || 0;
+                const E_val = parseFloat(document.getElementById('E').value) || 0;
+                const Ge = document.getElementById('Ge').value === '1';
+                const Gt = parseFloat(document.getElementById('Gt').value) || 0;
+                const Gp = parseFloat(document.getElementById('Gp').value) || 0;
+                const E_min = parseFloat(document.getElementById('E_min').value) || 60000000;
+                const E_max = parseFloat(document.getElementById('E_max').value) || 90000000;
+
+                return {
+                    teacherName,
+                    monthYear,
+                    H,
+                    Hm,
+                    isMarried,
+                    childrenCount,
+                    insuranceType,
+                    F,
+                    G,
+                    M,
+                    Dp,
+                    B,
+                    C,
+                    D: D_val,
+                    E: E_val,
+                    Ge,
+                    Gt,
+                    Gp,
+                    E_min,
+                    E_max,
+                };
+            }
+
+            function runPayrollEngine(inputs) {
+                const {
+                    H,
+                    Hm,
+                    isMarried,
+                    childrenCount,
+                    insuranceType,
+                    F,
+                    G,
+                    M,
+                    Dp,
+                    B,
+                    C,
+                    D,
+                    E,
+                    Ge,
+                    Gt,
+                    Gp,
+                    E_min,
+                    E_max,
+                } = inputs;
+
+                const P = Hm > 0 ? truncate2(H / Hm) : 0;
+                const GradeBonus = Ge ? (Gt * Gp) : 0;
+
+                const BasePay = (F * M) * P;
+                const MonthlySeveranceBase = (G * M) * P;
+                const Housing = B * P;
+                const Grocery = C * P;
+                const Marriage = isMarried ? (D * P) : 0;
+                const Children = (E * childrenCount) * P;
+                const K_base = BasePay + MonthlySeveranceBase + Housing + Grocery + Marriage + Children + GradeBonus;
+
+                const R_fixed = F + G + (GradeBonus / M);
+
+                // مبلغ هدف همیشه از فرمول محاسبه می‌شود، بدون ورودی دستی
+                const TargetAmount = (H * Dp) + (G * M * P) + GradeBonus;
+
+                const severanceFactor = M / 12;
+                const leaveFactor = 26 / 12;
+                const combinedFactor = severanceFactor + leaveFactor;
+
+                let X_final = 0;
+                let hypothesisUsed = 0;
+                let annualEidi_final = 0;
+                let monthlyEidi_final = 0;
+
+                function computeGrossTotal(X_val, annEidi) {
+                    const monEidi = (annEidi / 12) * P;
+                    const R_daily = (P > 0) ?
+                        F + G + (GradeBonus / M) + (X_val / (M * P)) :
+                        F + G + (GradeBonus / M);
+                    const severancePay = R_daily * severanceFactor * P;
+                    const leavePay = R_daily * leaveFactor * P;
+                    return K_base + X_val + monEidi + severancePay + leavePay;
+                }
+
+                function computeActualAnnualEidi(X_val) {
+                    const R_daily = (P > 0) ?
+                        F + G + (GradeBonus / M) + (X_val / (M * P)) :
+                        F + G + (GradeBonus / M);
+                    const criterionMonthly = R_daily * M;
+                    const rawAnnual = criterionMonthly * 2;
+                    return Math.max(E_min, Math.min(E_max, rawAnnual));
+                }
+
+                if (P <= 0) {
+                    X_final = 0;
+                    hypothesisUsed = 0;
+                    annualEidi_final = E_min;
+                    monthlyEidi_final = 0;
+                } else {
+                    const A = F + G + (GradeBonus / M);
+                    const denom = 1 + (combinedFactor / M);
+
+                    const annEidi_h1 = E_min;
+                    const monEidi_h1 = (annEidi_h1 / 12) * P;
+                    let X_h1 = (TargetAmount - K_base - monEidi_h1 - A * combinedFactor * P) / denom;
+                    if (X_h1 < 0) X_h1 = 0;
+                    const actualEidi_h1 = computeActualAnnualEidi(X_h1);
+                    const h1_valid = actualEidi_h1 <= E_min + 1;
+
+                    const annEidi_h2 = E_max;
+                    const monEidi_h2 = (annEidi_h2 / 12) * P;
+                    let X_h2 = (TargetAmount - K_base - monEidi_h2 - A * combinedFactor * P) / denom;
+                    if (X_h2 < 0) X_h2 = 0;
+                    const actualEidi_h2 = computeActualAnnualEidi(X_h2);
+                    const h2_valid = actualEidi_h2 >= E_max - 1;
+
+                    const AccFixed = R_fixed * P * combinedFactor;
+                    const denom_h3 = 476 / 360;
+                    let X_h3 = (TargetAmount - K_base - AccFixed - (5 * R_fixed * P)) / denom_h3;
+                    if (X_h3 < 0) X_h3 = 0;
+                    const actualEidi_h3 = computeActualAnnualEidi(X_h3);
+                    const h3_valid = (actualEidi_h3 > E_min + 1) && (actualEidi_h3 < E_max - 1);
+
+                    if (h1_valid && X_h1 >= 0) {
+                        X_final = X_h1;
+                        hypothesisUsed = 1;
+                        annualEidi_final = E_min;
+                    } else if (h2_valid && X_h2 >= 0) {
+                        X_final = X_h2;
+                        hypothesisUsed = 2;
+                        annualEidi_final = E_max;
+                    } else if (h3_valid && X_h3 >= 0) {
+                        X_final = X_h3;
+                        hypothesisUsed = 3;
+                        annualEidi_final = actualEidi_h3;
+                    } else {
+                        X_final = Math.max(0, X_h3);
+                        hypothesisUsed = 3;
+                        annualEidi_final = computeActualAnnualEidi(X_final);
                     }
-                    calculateAndRender();
+                    monthlyEidi_final = (annualEidi_final / 12) * P;
+                }
+
+                const R_daily = (P > 0) ?
+                    F + G + (GradeBonus / M) + (X_final / (M * P)) :
+                    F + G + (GradeBonus / M);
+
+                const MonthlySeverancePay = R_daily * severanceFactor * P;
+                const MonthlyLeavePay = R_daily * leaveFactor * P;
+                const GrossTotal = K_base + X_final + monthlyEidi_final + MonthlySeverancePay + MonthlyLeavePay;
+
+                let insuranceBase = 0;
+                switch (insuranceType) {
+                    case 'NONE':
+                        insuranceBase = 0;
+                        break;
+                    case 'FULL_BASE':
+                        insuranceBase = (F * M) + B + C;
+                        break;
+                    case 'CALCULATED_BASE':
+                        insuranceBase = ((F * M) + (G * M) + B + C) * P + GradeBonus;
+                        break;
+                    case 'LEGAL':
+                        insuranceBase = GrossTotal - (Marriage + Children);
+                        break;
+                }
+                const insuranceDeduction = insuranceBase * 0.07;
+                const netPayment = GrossTotal - insuranceDeduction;
+
+                return {
+                    H,
+                    Hm,
+                    P,
+                    GradeBonus,
+                    BasePay: toRial(BasePay),
+                    MonthlySeveranceBase: toRial(MonthlySeveranceBase),
+                    Housing: toRial(Housing),
+                    Grocery: toRial(Grocery),
+                    Marriage: toRial(Marriage),
+                    Children: toRial(Children),
+                    K_base: toRial(K_base),
+                    X: toRial(X_final),
+                    R_daily,
+                    MonthlySeverancePay: toRial(MonthlySeverancePay),
+                    MonthlyLeavePay: toRial(MonthlyLeavePay),
+                    annualEidi: toRial(annualEidi_final),
+                    monthlyEidi: toRial(monthlyEidi_final),
+                    hypothesisUsed,
+                    GrossTotal: toRial(GrossTotal),
+                    insuranceBase: toRial(insuranceBase),
+                    insuranceDeduction: toRial(insuranceDeduction),
+                    netPayment: toRial(netPayment),
+                    TargetAmount: toRial(TargetAmount),
+                };
+            }
+
+            function renderPayslip(inputs, result) {
+                const {
+                    teacherName,
+                    monthYear,
+                    isMarried,
+                    childrenCount,
+                    insuranceType,
+                } = inputs;
+
+                // نمایش Hm به صورت اعشاری (با دو رقم قطع شده) یا فرمت ساعت:دقیقه؟
+                // بهتر است مقدار اعشاری ذخیره شود، اما در نمایش می‌توانیم به صورت اعشاری نشان دهیم.
+                const HmDisplay = result.Hm.toFixed(2);
+
+                document.getElementById('slipMeta').innerHTML = `
+                    <div><strong>نام استاد:</strong> ${escapeHtml(teacherName)}</div>
+                    <div><strong>دوره:</strong> ${escapeHtml(monthYear)}</div>
+                    <div><strong>ساعت کارکرد:</strong> ${result.H.toFixed(2)} از ${HmDisplay} (ضریب P: ${result.P.toFixed(2)})</div>
+                    <div><strong>تأهل:</strong> ${isMarried ? 'متأهل' : 'مجرد'} | <strong>فرزندان:</strong> ${childrenCount}</div>
+                `;
+
+                const rows = [];
+                rows.push({ label: '📌 اقلام ثابت فیش', cls: 'section-label-row', amount: null });
+                rows.push({ label: 'حقوق پایه (BasePay)', amount: result.BasePay,
+                    desc: `(F×M)×P = (${formatRial(toRial(inputs.F))}×${inputs.M})×${result.P.toFixed(2)}` });
+                rows.push({ label: 'سنوات ماهانه (MonthlySeverance)', amount: result.MonthlySeveranceBase,
+                    desc: `(G×M)×P` });
+                rows.push({ label: 'مسکن (Housing)', amount: result.Housing, desc: `B×P` });
+                rows.push({ label: 'خواربار (Grocery)', amount: result.Grocery, desc: `C×P` });
+                if (isMarried) rows.push({ label: 'حق تأهل (Marriage)', amount: result.Marriage, desc: `D×P` });
+                if (childrenCount > 0) rows.push({ label: `حق اولاد (${childrenCount} فرزند)`,
+                    amount: result.Children, desc: `E×${childrenCount}×P` });
+                if (result.GradeBonus > 0) rows.push({ label: 'پاداش پایه/رتبه (GradeBonus)',
+                    amount: result.GradeBonus, desc: 'Gt×Gp — غیروابسته به P' });
+                rows.push({ label: 'جمع اقلام ثابت (K_base)', amount: result.K_base, cls: 'subtotal' });
+
+                rows.push({ label: '🎁 عیدی', cls: 'section-label-row', amount: null });
+                rows.push({ label: `عیدی سالانه (فرضیه ${result.hypothesisUsed})`, amount: result.annualEidi,
+                    desc: result.hypothesisUsed === 1 ? 'کف (E_min)' : result.hypothesisUsed === 2 ? 'سقف (E_max)' : 'شناور' });
+                rows.push({ label: 'عیدی ماهانه (MonthlyEidi)', amount: result.monthlyEidi,
+                    desc: `(AnnualEidi/12)×P` });
+
+                rows.push({ label: '🎯 پاداش تدریس', cls: 'section-label-row', amount: null });
+                rows.push({ label: 'پاداش تدریس (X)', amount: result.X,
+                    desc: 'متغیر حل‌شده برای رسیدن به مبلغ هدف' });
+                rows.push({ label: 'حقوق معیار روزانه (R_daily)', amount: toRial(result.R_daily),
+                    desc: 'F+G+(GradeBonus/M)+(X/(M×P))', isInfo: true });
+
+                rows.push({ label: '📅 سنوات و مرخصی', cls: 'section-label-row', amount: null });
+                rows.push({ label: 'سنوات پایان خدمت ماهانه', amount: result.MonthlySeverancePay,
+                    desc: `R_daily×(${inputs.M}/12)×P` });
+                rows.push({ label: 'ذخیره مرخصی ماهانه', amount: result.MonthlyLeavePay, desc: 'R_daily×(26/12)×P' });
+
+                rows.push({ label: '💰 جمع ناخالص (GrossTotal)', amount: result.GrossTotal, cls: 'subtotal' });
+                rows.push({ label: `🛡️ کسر بیمه (۷٪) — نوع: ${insuranceType}`, amount: result.insuranceDeduction,
+                    cls: 'deduction', desc: `مبنا: ${formatRial(result.insuranceBase)} ریال` });
+                rows.push({ label: '✅ خالص پرداختی (Net)', amount: result.netPayment, cls: 'net' });
+
+                const tbody = document.getElementById('payslipTbody');
+                tbody.innerHTML = rows.map(r => {
+                    const cls = r.cls || '';
+                    const amountCell = r.amount !== null && r.amount !== undefined ?
+                        `<td class="amount ${r.isInfo ? 'info' : ''}">${formatRial(r.amount)} ریال</td>` :
+                        `<td></td>`;
+                    const descCell = r.desc ? `<span style="font-size:0.6rem;color:#999;display:block;">${r.desc}</span>` : '';
+                    return `<tr class="${cls}">
+                        <td>${r.label}${descCell}</td>
+                        ${amountCell}
+                    </tr>`;
+                }).join('');
+
+                document.getElementById('payslipFooter').innerHTML = `
+                    <div>
+                        <div>📌 مبلغ هدف (فرمول): <strong>${formatRial(result.TargetAmount)} ریال</strong></div>
+                        <div style="margin-top:4px;">⏱️ ضریب کارکرد P: <strong>${result.P.toFixed(2)}</strong> | فرضیه عیدی: <strong>${result.hypothesisUsed}</strong></div>
+                    </div>
+                    <div class="signature-area">
+                        <div class="signature-line"></div>
+                        <div>مهر و امضا</div>
+                    </div>
+                `;
+            }
+
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function calculateAndRender() {
+                const inputs = readInputs();
+                if (inputs.Hm <= 0) {
+                    showToast('⚠️ ساعات استاندارد ماهانه باید بزرگتر از صفر باشد.');
+                    return;
+                }
+                const result = runPayrollEngine(inputs);
+                renderPayslip(inputs, result);
+                showToast('✅ فیش حقوقی با موفقیت محاسبه و بروزرسانی شد.');
+            }
+
+            function printPayslip() {
+                calculateAndRender();
+                setTimeout(() => {
+                    window.print();
+                }, 200);
+            }
+
+            function resetToDefaults() {
+                document.getElementById('teacherName').value = 'استاد نمونه';
+                document.getElementById('monthYear').value = 'فروردین ۱۴۰۵';
+                document.getElementById('hoursWorked').value = '160:00';
+                document.getElementById('hoursStandard').value = '192:00';
+                document.getElementById('isMarried').value = '0';
+                document.getElementById('childrenCount').value = '0';
+                document.getElementById('insuranceType').value = 'CALCULATED_BASE';
+                document.getElementById('F').value = '1500000';
+                document.getElementById('G').value = '500000';
+                document.getElementById('M').value = '30';
+                document.getElementById('Dp').value = '200000';
+                document.getElementById('B').value = '5000000';
+                document.getElementById('C').value = '3000000';
+                document.getElementById('D').value = '2000000';
+                document.getElementById('E').value = '1500000';
+                document.getElementById('Ge').value = '0';
+                document.getElementById('Gt').value = '10';
+                document.getElementById('Gp').value = '500000';
+                document.getElementById('E_min').value = '60000000';
+                document.getElementById('E_max').value = '90000000';
+                calculateAndRender();
+                showToast('↩️ مقادیر به پیش‌فرض بازنشانی شدند.');
+            }
+
+            function attachLiveListeners() {
+                const inputIds = [
+                    'teacherName', 'monthYear', 'hoursWorked', 'hoursStandard',
+                    'isMarried', 'childrenCount', 'insuranceType',
+                    'F', 'G', 'M', 'Dp', 'B', 'C', 'D', 'E',
+                    'Ge', 'Gt', 'Gp', 'E_min', 'E_max'
+                ];
+                inputIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.addEventListener('input', debounce(calculateAndRender, 400));
+                    el.addEventListener('change', debounce(calculateAndRender, 300));
+                });
+
+                // اصلاح فرمت ساعت:دقیقه برای هر دو فیلد زمان
+                const timeFields = ['hoursWorked', 'hoursStandard'];
+                timeFields.forEach(fieldId => {
+                    const el = document.getElementById(fieldId);
+                    if (el) {
+                        el.addEventListener('blur', () => {
+                            let val = el.value.trim();
+                            if (val && val.includes(':')) {
+                                const parts = val.split(':');
+                                if (parts.length === 2) {
+                                    const h = parseInt(parts[0], 10) || 0;
+                                    const m = parseInt(parts[1], 10) || 0;
+                                    const formatted = `${h}:${String(m).padStart(2, '0')}`;
+                                    if (val !== formatted) {
+                                        el.value = formatted;
+                                    }
+                                }
+                            }
+                            calculateAndRender();
+                        });
+                    }
                 });
             }
-        }
 
-        function debounce(fn, delay) {
-            let timer;
-            return function(...args) {
-                clearTimeout(timer);
-                timer = setTimeout(() => fn.apply(this, args), delay);
-            };
-        }
+            function debounce(fn, delay) {
+                let timer;
+                return function(...args) {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => fn.apply(this, args), delay);
+                };
+            }
 
-        // ──────────────────────────────────────
-        //  INIT
-        // ──────────────────────────────────────
-        function init() {
-            attachLiveListeners();
-            calculateAndRender();
-            console.log('🏦 HRMS Payroll Engine Initialized');
-            console.log('   — Precision: Rial (Integer truncation)');
-            console.log('   — Time: HH:mm → decimal with 2-dec truncation');
-            console.log('   — Eidi: 3-Hypothesis Solver active');
-            console.log('   — Insurance: 7% deduction based on selected type');
-            console.log('   — Live calculation: enabled');
-            console.log('   — Print: A5 optimized');
-        }
+            function init() {
+                attachLiveListeners();
+                calculateAndRender();
+            }
 
-        // Expose to global scope
-        window.calculateAndRender = calculateAndRender;
-        window.printPayslip = printPayslip;
-        window.resetToDefaults = resetToDefaults;
+            window.calculateAndRender = calculateAndRender;
+            window.printPayslip = printPayslip;
+            window.resetToDefaults = resetToDefaults;
 
-        // Run on DOM ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-    })();
-</script>
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
 </body>
 </html>
